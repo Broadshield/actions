@@ -1,0 +1,62 @@
+{
+  "eslint.packageManager": "yarn",
+  "eslint.codeAction.showDocumentation": {
+    "enable": true
+  },
+  "editor.formatOnSave": true,
+  "eslint.alwaysShowStatus": true,
+  "[json]": {
+    "editor.defaultFormatter": "Trunk.io"
+  },
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "javascriptreact",
+    "typescriptreact",
+    "html"
+  ],
+  "eslint.options": {
+    "extensions": [
+      ".js",
+      ".ts",
+      "html"
+    ]
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+  },
+  "[typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    }
+  },
+  "yaml.customTags": [
+    "!Equals sequence",
+    "!FindInMap sequence",
+    "!GetAtt",
+    "!GetAZs",
+    "!ImportValue",
+    "!Join sequence",
+    "!Ref",
+    "!Select sequence",
+    "!Split sequence",
+    "!Sub",
+    "!And",
+    "!And sequence",
+    "!If",
+    "!If sequence",
+    "!Not",
+    "!Not sequence",
+    "!Equals",
+    "!Or",
+    "!Or sequence",
+    "!FindInMap",
+    "!Base64",
+    "!Join",
+    "!Cidr",
+    "!Sub sequence",
+    "!ImportValue sequence",
+    "!Select",
+    "!Split"
+  ]
+}

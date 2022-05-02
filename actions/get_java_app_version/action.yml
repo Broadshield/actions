@@ -1,0 +1,33 @@
+name: 🏷️ Get Java Application Version from `pom.xml` or `gradle.properties`
+description: >
+  Get the label for a given gitref.
+inputs:
+  default_version:
+    required: false
+    type: string
+    default: "0.0.0"
+
+outputs:
+  version:
+    value: ${{ steps.version.outputs.version }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get Version
+      id: version
+      shell: bash
+      run: |
+        if [ -f "${GITHUB_WORKSPACE:-.}/pom.xml" ];then
+          FILENAME="${GITHUB_WORKSPACE:-.}/pom.xml"
+          install_xmllint >/dev/null 2>&1
+          VERSION="$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' "${FILENAME}")"
+        elif [ -f "${GITHUB_WORKSPACE:-.}/gradle.properties" ];then
+          FILENAME="${GITHUB_WORKSPACE:-.}/gradle.properties"
+          VERSION="$(getProperty version "${FILENAME}")"
+        fi
+        if [ -z "${VERSION}" ];then
+          VERSION="${{inputs.default_version}}"
+        fi
+        set_output version "${VERSION}"
+

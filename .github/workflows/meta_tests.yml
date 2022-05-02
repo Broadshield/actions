@@ -1,0 +1,22 @@
+name: 📔 Meta Tests
+on:
+  push:
+    branches:
+      - 'dev'
+
+jobs:
+  get-label-test:
+    name: Get Label Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Create Test file
+        run: |
+          echo "version = 0.0.5" > gradle.properties
+      - uses: ./actions/get_label_for_gitref
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.ref }}
+          env: dev
+          release_branch: dev

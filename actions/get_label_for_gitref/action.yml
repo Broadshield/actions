@@ -1,0 +1,124 @@
+name: 🏷️ Get Label For GitRef
+description: >
+  Get the label for a given gitref.
+inputs:
+  ref:
+    required: true
+    type: string
+  env:
+    required: true
+    type: string
+  release_branch:
+    required: true
+    type: string
+    default: dev
+  token:
+    required: true
+
+outputs:
+  on_release_branch:
+    value: ${{ steps.is_release_branch.outputs.on == 'true' }}
+  tag_name:
+    value: ${{ steps.details.outputs.tag_name }}
+  label:
+    value: ${{ steps.details.outputs.label }}
+  application_name:
+    value: ${{ steps.application_name.outputs.app_name }}
+  tag_ref:
+    value: refs/tags/${{ steps.details.outputs.tag_name }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Publish Bash Functions To Job Steps
+      shell: bash
+      run: |
+        if [ -z "${BASH_ENV}" ]; then
+          export BASH_ENV="${{ github.action_path }}/../scripts/bash_functions.sh"
+          echo "BASH_ENV=${BASH_ENV}" >>"${GITHUB_ENV}"
+        fi
+
+    - name: Set Env Vars
+      id: set_env_vars
+      shell: bash
+      run: |
+        set_env ENV "${{ inputs.env }}"
+        set_env GITHUB_REF "${{ inputs.ref }}"
+        set_env RELEASE_BRANCH "${{ inputs.release_branch }}"
+
+    - name: On Release Branch
+      id: is_release_branch
+      shell: bash
+      run: check_if_on_release_branch
+
+    - name: Get current tag from ref
+      id: tag
+      working-directory: ${{ github.workspace }}
+      shell: bash
+      run: set_tag_as_output_if_available
+
+    - name: Get Java App Version
+      id: get_java_app_version
+      continue-on-error: true
+      uses: Broadshield/deploy-java-app-to-elastic-beanstalk/actions/get_java_app_version@dev
+
+    - name: Get Filepath
+      id: file
+      shell: bash
+      run: |
+        if [ -f "./pom.xml" ];then
+          echo "::set-output name=path::./pom.xml"
+        elif [ -f "./gradle.properties" ];then
+          echo "::set-output name=path::./gradle.properties"
+        fi
+
+    - name: Generate Label
+      if: steps.tag.outputs.tag == 'unknown' && steps.file.outputs.path != ''
+      uses: Broadshield/github-action-generate-tag-name-from-maven-or-gradle@main
+      id: tag_name
+      with:
+        github_token: ${{ inputs.token }}
+        release_branch: ${{ env.RELEASE_BRANCH }}
+        bump: build
+        releases_only: "false"
+        sort_tags: "true"
+        filepath: ${{ steps.file.outputs.path }}
+        prepend_v: "true"
+        ignore_v_when_searching: "true"
+        build_delimiter: "+"
+        label_delimiter: "-"
+
+    - name: Generate Git Tag Label
+      if: steps.tag.outputs.tag == 'unknown'
+      shell: bash
+      env:
+        GITHUB_TAG: ${{ steps.tag_name.outputs.tag_name }}
+        GITHUB_REF: ${{ inputs.ref }}
+      run: |
+        set_env GITHUB_TAG "${GITHUB_TAG}"
+
+    - name: Push Tag
+      id: tag_version
+      if: steps.tag.outputs.tag == 'unknown'
+      uses: mathieudutour/github-tag-action@v6.0
+      with:
+        github_token: ${{ inputs.token }}
+        release_branches: ${{ env.RELEASE_BRANCH }}
+        custom_tag: ${{ steps.tag_name.outputs.tag_name }}
+        tag_prefix: ""
+        create_annotated_tag: "true"
+
+    - name: Get Label
+      id: details
+      shell: bash
+      run: |
+        # constraint: Member must contain only letters, digits, 
+        # and the dash character and may not start or end with a dash
+        set_output label "$(safe_eb_label_name "${GITHUB_TAG}")"
+        set_output tag_name "${GITHUB_TAG}"
+
+    - name: Get application name
+      id: application_name
+      shell: bash
+      run: |
+        source "${{ github.action_path }}/../scripts/get-app-name.sh"
