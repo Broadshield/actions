@@ -60,7 +60,7 @@ runs:
     - name: Get Java App Version
       id: get_java_app_version
       continue-on-error: true
-      uses: Broadshield/deploy-java-app-to-elastic-beanstalk/actions/get_java_app_version@dev
+      uses: Broadshield/actions/actions/get_java_app_version@dev
 
     - name: Get Filepath
       id: file
@@ -112,7 +112,7 @@ runs:
       id: details
       shell: bash
       run: |
-        # constraint: Member must contain only letters, digits, 
+        # constraint: Member must contain only letters, digits,
         # and the dash character and may not start or end with a dash
         set_output label "$(safe_eb_label_name "${GITHUB_TAG}")"
         set_output tag_name "${GITHUB_TAG}"
