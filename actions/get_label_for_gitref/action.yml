@@ -22,8 +22,8 @@ outputs:
     value: ${{ steps.details.outputs.tag_name }}
   label:
     value: ${{ steps.details.outputs.label }}
-  application_name:
-    value: ${{ steps.application_name.outputs.app_name }}
+  application_prefix:
+    value: ${{ steps.application_name.outputs.app_prefix }}
   tag_ref:
     value: refs/tags/${{ steps.details.outputs.tag_name }}
 
@@ -117,8 +117,8 @@ runs:
         set_output label "$(safe_eb_label_name "${GITHUB_TAG}")"
         set_output tag_name "${GITHUB_TAG}"
 
-    - name: Get application name
-      id: application_name
+    - name: Get application prefix
+      id: application_prefix
       shell: bash
       run: |
         source "${{ github.action_path }}/../scripts/get-app-name.sh"
