@@ -22,14 +22,13 @@
   ],
   "scripts": {
     "pre-commit": "yarn run lint:fix && yarn run build && git add lib && yarn run generate-docs",
-    "pre-push": "yarn format",
+    "pre-push": "yarn run format",
     "all": "yarn run build && yarn run format && yarn run lint && yarn run package && yarn test",
     "build": "rimraf lib;yarn run typecheck;node .github/scripts/esbuild.cjs",
     "build:docker": "run-script-os",
     "build:docker:win32": "docker run --rm -t -v \"%cd%\":/work -w /work node:16-alpine sh -c \"yarn run build\"",
     "build:docker:default": "docker run --rm -t -v $(pwd):/work -w /work node:16-alpine sh -c 'yarn run build'",
     "clean": "rimraf lib",
-    "commit": "git-cz",
     "format": "trunk check",
     "format:all": "trunk check --all",
     "format:fix": "trunk fmt",
@@ -73,13 +72,10 @@
   },
   "devDependencies": {
     "@Broadshield/prettier-config": "github:Broadshield/prettier-config",
-    "@commitlint/cli": "^16.2.4",
-    "@commitlint/config-conventional": "^16.2.4",
-    "@commitlint/prompt": "^16.2.4",
     "@octokit/graphql-schema": "^10.73.0",
     "@prettier/plugin-ruby": "^3.0.0",
     "@prettier/plugin-xml": "^2.1.0",
-    "@trunkio/launcher": "^1.1.1",
+    "@trunkio/launcher": "latest",
     "@tsconfig/node16": "^1.0.2",
     "@types/jest": "^27.5.0",
     "@types/js-yaml": "^4.0.5",
@@ -89,14 +85,13 @@
     "@typescript-eslint/eslint-plugin": "^5.23.0",
     "@typescript-eslint/parser": "^5.23.0",
     "@typescript-eslint/typescript-estree": "^5.23.0",
-    "commitizen": "^4.2.4",
-    "cz-conventional-changelog": "^3.3.0",
     "dotenv": "^16.0.0",
     "esbuild": "^0.14.38",
     "eslint": "^8.15.0",
     "eslint-config-adjunct": "^4.11.1",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-auto": "^0.7.1",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-formatter-codeframe": "^7.32.1",
@@ -137,6 +132,7 @@
     "lint-staged": "^12.4.1",
     "markdownlint": "^0.25.1",
     "markdownlint-cli": "^0.31.1",
+    "postcss": "^8.4.13",
     "prettier": "^2.6.2",
     "prettier-plugin-java": "^1.6.1",
     "prettier-plugin-organize-imports": "^2.3.4",
@@ -187,14 +183,7 @@
       ]
     }
   },
-  "displayName": "bitflight-devops/github-action-typescript-template",
-  "exports": {
-    ".": {
-      "import": "./src/index.ts",
-      "require": "./lib/main.js"
-    },
-    "./package.json": "./package.json"
-  },
+  "displayName": "Broadshield/actions",
   "jest-junit": {
     "suiteNameTemplate": "{filepath}",
     "classNameTemplate": "{classname}",

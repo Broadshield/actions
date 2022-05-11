@@ -4,7 +4,7 @@
 #     exit 0
 # fi
 set +x
-if [ "${DEBUG:-"false"}" = "true" ]; then
+if [[ ${DEBUG:-"false"} == "true" ]]; then
   echo "Debug mode on"
   set -x
   PS4=' ::debug file=${BASH_SOURCE},line=${LINENO}::${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
@@ -63,12 +63,12 @@ function pipe_errors_to_github_workflow() {
     if string_not_empty "${data}"; then
       if echo "${data}" | grep -q -i "ERROR"; then
         if running_in_ci; then
-          error_log "$(process_multiline_variable "$data")"
+          error_log "$(process_multiline_variable "${data}")"
         else
-          printf "☠ %s\n" "$(process_multiline_variable "$data")"
+          printf "☠ %s\n" "$(process_multiline_variable "${data}")"
         fi
       else
-        printf "ℹ %s\n" "$(process_multiline_variable "$data")"
+        printf "ℹ %s\n" "$(process_multiline_variable "${data}")"
       fi
     fi
   done
@@ -76,11 +76,12 @@ function pipe_errors_to_github_workflow() {
 
 function log_file_contents() {
   # echo "::warning file=app.js,line=1,col=5,endColumn=7::Missing semicolon"
-  if [ -f "${1}" ]; then
+  if [[ -f ${1} ]]; then
     if running_in_ci; then
       echo "::group::📄 ${1}"
       export GITHUB_LOG_TITLE="${DEPLOY_VERSION:-${GITHUB_ACTION:-${1:-}}}"
       export GITHUB_LOG_FILE="${1}"
+      # shellcheck disable=SC2002
       cat "${1}" | pipe_errors_to_github_workflow
       unset ERROR_LOG_TITLE
       unset ERROR_LOG_FILE
@@ -96,7 +97,7 @@ function log_file_contents() {
 function pipe_errors_from_eb_logs_to_github_actions() {
   EB_ENV="${1:-${ENVIRONMENT_NAME}}"
   LOG_ZIP="${EB_ENV}.zip"
-  if [ ! -f "${LOG_ZIP}" ]; then
+  if [[ ! -f ${LOG_ZIP} ]]; then
     echo "Retrieving logs from Elastic Beanstalk"
     EB_ENV="${1:-${ENVIRONMENT_NAME}}"
     if aws_run elasticbeanstalk request-environment-info --info-type bundle --environment-name "${EB_ENV}"; then
@@ -133,7 +134,7 @@ function getLogType() {
 function join_by {
   local d=${1-} f=${2-}
   if shift 2; then
-    printf %s "$f" "${@/#/$d}"
+    printf %s "${f}" "${@/#/${d}}"
   fi
 }
 function github_log() {
@@ -141,8 +142,8 @@ function github_log() {
   shift
   MSG="$(trim "${*}")"
   MSG="$(process_multiline_variable "${MSG}")"
-  if [ ${#MSG} -gt 0 ]; then
-    if [ ${#logtype} -gt 0 ]; then
+  if [[ ${#MSG} -gt 0 ]]; then
+    if [[ ${#logtype} -gt 0 ]]; then
       LOG_STRING=("::${logtype} ")
       shift
       LOG_ARGS=()
@@ -150,7 +151,7 @@ function github_log() {
       FILE="$(trim "${GITHUB_LOG_FILE:-${BASH_SOURCE[0]}}")"
       test "${#FILE}" -gt 0 && LOG_ARGS+=("file=${FILE}")
       test -n "${GITHUB_LOG_TITLE:-}" && LOG_ARGS+=("title=${GITHUB_LOG_TITLE}")
-      if [ "${#LOG_ARGS[@]}" -gt 0 ]; then
+      if [[ ${#LOG_ARGS[@]} -gt 0 ]]; then
         ARGS="$(join_by , "${LOG_ARGS[@]}")"
         LOG_STRING+=("${ARGS}")
       fi
@@ -163,7 +164,7 @@ function github_log() {
 
 }
 function debug_log() {
-  if [ "${DEBUG:-false}" = "true" ]; then
+  if [[ ${DEBUG:-false} == "true" ]]; then
     github_log debug "${*}"
   fi
 }
@@ -180,7 +181,7 @@ function running_in_ci() {
   test -n "${CI:+x}"
 }
 function set_env() {
-  if [ "$#" -ne 2 ]; then
+  if [[ $# -ne 2 ]]; then
     error_log "${0}: You need to provide two arguments. Provided args ${*}"
     return 1
   fi
@@ -191,7 +192,7 @@ function set_env() {
   debug_log "Environment Variable set: ${1}=${2}"
 }
 function set_output() {
-  if [ "$#" -ne 2 ]; then
+  if [[ $# -ne 2 ]]; then
     error_log "${0}: You need to provide two arguments. Provided args ${*}"
     return 1
   fi
@@ -205,11 +206,11 @@ function set_output() {
 }
 
 function add_to_path() {
-  if [ "$#" -ne 1 ]; then
+  if [[ $# -ne 1 ]]; then
     error_log "${0}: You need to provide one arguments. Provided args ${*}"
     return 1
   fi
-  export PATH="${1}:$PATH"
+  export PATH="${1}:${PATH}"
   if running_in_ci; then
     echo "${1}" >>"${GITHUB_PATH}"
     debug_log "Path added: ${1}"
@@ -220,7 +221,7 @@ function add_to_path() {
 }
 
 function get_java_version() {
-  if [ -f .java-version ]; then
+  if [[ -f .java-version ]]; then
     JAVA_VERSION="$(cat .java-version)"
   else
     JAVA_VERSION="11.0"
@@ -258,7 +259,7 @@ function get_prerelease_suffix() {
 }
 
 function check_if_on_release_branch() {
-  if [[ "${GITHUB_REF//refs\/heads\//}" == "${RELEASE_BRANCH//refs\/heads\//}" ]]; then
+  if [[ ${GITHUB_REF//refs\/heads\//} == "${RELEASE_BRANCH//refs\/heads\//}" ]]; then
     set_output on true
     set_env ON_RELEASE_BRANCH true
   else
@@ -293,9 +294,9 @@ function prefix_sudo() {
 function installer() {
   SUDO=$(prefix_sudo)
   if command_exists yum; then
-    $SUDO yum "$@"
+    ${SUDO} yum "$@"
   elif command_exists apt-get; then
-    $SUDO apt-get -q update && $SUDO apt-get "$@"
+    ${SUDO} apt-get -q update && ${SUDO} apt-get "$@"
   elif command_exists brew; then
     brew "$@"
   else
@@ -315,10 +316,10 @@ function install_app() {
       debug_log "${cmd} installed already"
     fi
   done
-  if [ ${#INSTALL_LIST[@]} -gt 0 ]; then
-    if [ "$(uname)" == "Darwin" ]; then
+  if [[ ${#INSTALL_LIST[@]} -gt 0 ]]; then
+    if [[ "$(uname)" == "Darwin" ]]; then
       installer install "${INSTALL_LIST[@]}"
-    elif [ "$(uname -s | cut -c1-5)" == "Linux" ]; then
+    elif [[ "$(uname -s | cut -c1-5)" == "Linux" ]]; then
       installer install -y -q "${INSTALL_LIST[@]}"
     fi
   fi
@@ -329,10 +330,10 @@ function install_eb_cli() {
   if ! command_exists python3; then
     install_app python3
   fi
-  if [ ${#INSTALL_LIST[@]} -gt 0 ]; then
-    if [ "$(uname)" == "Darwin" ]; then
+  if [[ ${#INSTALL_LIST[@]} -gt 0 ]]; then
+    if [[ "$(uname)" == "Darwin" ]]; then
       installer install pkg-config libffi openssl
-    elif [ "$(uname -s | cut -c1-5)" == "Linux" ]; then
+    elif [[ "$(uname -s | cut -c1-5)" == "Linux" ]]; then
       installer install -y -q build-essential libssl-dev libffi-dev cargo
     fi
   fi
@@ -372,8 +373,8 @@ function install_golang() {
   export GO_VERSION="${GO_VERSION:-go1.15.3.linux-amd64.tar.gz}"
   if ! command_exists go; then
     debug_log "Installing GoLang"
-    curl -LsSO "https://dl.google.com/go/$GO_VERSION"
-    tar -C /usr/local -xzf "$GO_VERSION"
+    curl -LsSO "https://dl.google.com/go/${GO_VERSION}"
+    tar -C /usr/local -xzf "${GO_VERSION}"
     cat <<EOF >/etc/profile.d/go.sh
 export GOPATH=/etc/go
 export PATH=\$PATH:\$GOPATH/bin:/usr/local/go/bin
@@ -399,7 +400,7 @@ function install_chamber() {
 }
 
 function configure_bastion_ssh_tunnel() {
-  if [ -z "${BASTION_HOST}" ] || [ -z "${BASTION_USER}" ] || [ -z "${BASTION_PRIVATE_KEY}" ]; then
+  if [[ -z ${BASTION_HOST} ]] || [[ -z ${BASTION_USER} ]] || [[ -z ${BASTION_PRIVATE_KEY} ]]; then
     error_log "One or more essential bastion variables missing: BASTION_PRIVATE_KEY:'${BASTION_PRIVATE_KEY:0:10}' BASTION_HOST:'${BASTION_HOST}' BASTION_USER:'${BASTION_USER}'"
     exit 1
   fi
@@ -438,7 +439,7 @@ function open_bastion_ssh_tunnel() {
   fi
 }
 function close_bastion_ssh_tunnel() {
-  if [ -f "$HOME/.ssh/remotehost-proxy.ctl" ]; then
+  if [[ -f "${HOME}/.ssh/remotehost-proxy.ctl" ]]; then
     ssh -T -O "exit" remotehost-proxy
   fi
 }
@@ -455,7 +456,7 @@ function version_available() {
     --version-labels "${1}" \
     --query "ApplicationVersions[0].VersionLabel" \
     --output text)"
-  if [ "${VERSION_AVAILABLE}" = "${1}" ]; then
+  if [[ ${VERSION_AVAILABLE} == "${1}" ]]; then
     return 0
   else
     return 1
@@ -499,7 +500,7 @@ function remove_passive() {
   eb_run terminate --nohang --force "${ENV_NAME_TO_REMOVE}"
   event_logs_background "${ENV_NAME_TO_REMOVE}" &
   notice_log "Passive Environment '${ENV_NAME_TO_REMOVE}' termination signal sent - waiting for CNAME $(passive_cname_prefix) to be released"
-  if [[ "$1" == "hang" ]]; then
+  if [[ $1 == "hang" ]]; then
     timeout 180 wait_for_passive_cname &&
       notice_log "Passive Environment '${ENV_NAME_TO_REMOVE}' has released the CNAME $(passive_cname_prefix)"
   fi
@@ -542,7 +543,7 @@ function event_logs_background() {
 
 function create_environment() {
   info_log "Creating environment ${ENVIRONMENT_NAME} within application ${APPLICATION_NAME}"
-  if [ -z "${DEPLOY_VERSION}" ]; then
+  if [[ -z ${DEPLOY_VERSION} ]]; then
     eb_run create \
       --cfg "${ENVIRONMENT_CFG}" \
       --cname "${CNAME_PREFIX}" \
@@ -571,7 +572,7 @@ function get_list_of_docker_tags() {
   aws ecr list-images --repository-name "${DOCKER_IMAGE_NAME}" --filter tagStatus=TAGGED --region us-east-1
 }
 function deploy_asset() {
-  if [ -z "${DEPLOY_VERSION}" ]; then
+  if [[ -z ${DEPLOY_VERSION} ]]; then
     error_log "The env variable DEPLOY_VERSION is required"
     exit 1
     # eb_run deploy \
@@ -590,13 +591,13 @@ function deploy_asset() {
 
 function eb_init() {
   info_log "eb_init: Init EB CLI"
-  if [ -z "${EB_PLATFORM}" ]; then
+  if [[ -z ${EB_PLATFORM} ]]; then
     error_log "eb_init: function requires an EB_PLATFORM environment variable to exist"
     return 1
   fi
   EB_ARGS=("--platform=${EB_PLATFORM}")
-  [ -n "${REGION}" ] && EB_ARGS+=("--region=${REGION}")
-  [ -n "${EC2_KEYNAME}" ] && EB_ARGS+=("--keyname=${EC2_KEYNAME}")
+  [[ -n ${REGION} ]] && EB_ARGS+=("--region=${REGION}")
+  [[ -n ${EC2_KEYNAME} ]] && EB_ARGS+=("--keyname=${EC2_KEYNAME}")
 
   eb_run init "${EB_ARGS[@]}" "${APPLICATION_NAME}"
 
@@ -604,7 +605,7 @@ function eb_init() {
 
 function eb_load_config() {
   info_log "eb_load_config: Load Config from file to EB: ${ENVIRONMENT_CFG}"
-  if [ -z "${ENVIRONMENT_CFG}" ]; then
+  if [[ -z ${ENVIRONMENT_CFG} ]]; then
     error_log "eb_load_config: function requires an ENVIRONMENT_CFG environment variable to exist"
     return 1
   fi
@@ -613,17 +614,17 @@ function eb_load_config() {
 }
 
 function set_build_framework_output() {
-  if [ -f "build.gradle" ]; then
+  if [[ -f "build.gradle" ]]; then
     set_output is gradle
-  elif [ -f "pom.xml" ]; then
+  elif [[ -f "pom.xml" ]]; then
     set_output is maven
   fi
 }
 
 function set_build_framework_env() {
-  if [ -f "build.gradle" ]; then
+  if [[ -f "build.gradle" ]]; then
     set_env FRAMEWORK gradle
-  elif [ -f "pom.xml" ]; then
+  elif [[ -f "pom.xml" ]]; then
     set_env FRAMEWORK maven
   fi
 }
@@ -652,7 +653,7 @@ function parse_yaml() {
   s='[[:space:]]*'
   w='[a-zA-Z0-9_]*'
   fs="$(echo @ | tr @ '\034')"
-  #shellcheck disable=SC1087
+  #shellcheck disable=SC1087,SC2250
   sed -ne "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
     -e "s|^\($s\)\($w\)$s[:-]$s\(.*\)$s\$|\1$fs\2$fs\3|p" "$1" |
     awk -F"$fs" '{
