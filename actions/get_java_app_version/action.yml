@@ -5,14 +5,14 @@ inputs:
   default_version:
     required: false
     type: string
-    default: "0.0.0"
+    default: '0.0.0'
 
 outputs:
   version:
     value: ${{ steps.version.outputs.version }}
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Get Version
       id: version
@@ -30,4 +30,3 @@ runs:
           VERSION="${{inputs.default_version}}"
         fi
         set_output version "${VERSION}"
-

@@ -18,5 +18,5 @@
     "strict": true,
     "target": "ESNext"
   },
-  "include": ["./@types"]
+  "include": ["./@types", "./packages/*/source/", "./actions/"]
 }

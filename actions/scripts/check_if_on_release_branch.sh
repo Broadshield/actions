@@ -13,11 +13,11 @@ source "${DIR}/bash_functions.sh"
 #   If it doesn't, set step output 'on' to false, and environment variable 'ON_RELEASE_BRANCH' to false.
 
 ## Script Function Starts Here ##
-if [[ "${GITHUB_REF//refs\/heads\//}" == "${RELEASE_BRANCH//refs\/heads\//}" ]]; then
-    set_output on true
-    set_env ON_RELEASE_BRANCH true
+if [[ ${GITHUB_REF//refs\/heads\//} == "${RELEASE_BRANCH//refs\/heads\//}" ]]; then
+  set_output on true
+  set_env ON_RELEASE_BRANCH true
 else
-    set_output on false
-    set_env ON_RELEASE_BRANCH false
+  set_output on false
+  set_env ON_RELEASE_BRANCH false
 fi
 ## Script Function Ends Here ##

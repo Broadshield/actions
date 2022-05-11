@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../packages/js-lib/source/index.ts"],
+  "sourcesContent": ["export const JS_LIB_VERSION = '0.0.1';\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;AAAO,IAAM,iBAAiB;",
+  "names": []
+}

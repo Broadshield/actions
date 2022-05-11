@@ -1,0 +1,17 @@
+{
+  "paths": {
+    "action": "actions/get_label_for_gitref/action.yml",
+    "readme": "actions/get_label_for_gitref/README.md"
+  },
+  "show_logo": "true",
+  "versioning": {
+    "enabled": "true",
+    "override": "",
+    "prefix": "v",
+    "branch": "main"
+  },
+  "owner": "Broadshield",
+  "repo": "actions",
+  "title_prefix": "GitHub Action: ",
+  "pretty": "true"
+}

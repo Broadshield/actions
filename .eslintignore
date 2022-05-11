@@ -1,0 +1,11 @@
+dist/
+lib/
+node_modules/
+jest.config.ts
+.eslintrc.js
+commitlint.config.js
+webpack.config.js
+rollup.config.js
+!.github/
+*.tsbuildinfo
+/.github/github_event_jira_transitions.example.yml
