@@ -23,7 +23,7 @@ outputs:
   label:
     value: ${{ steps.details.outputs.label }}
   application_prefix:
-    value: ${{ steps.application_name.outputs.app_prefix }}
+    value: ${{ steps.application_prefix.outputs.app_prefix }}
   tag_ref:
     value: refs/tags/${{ steps.details.outputs.tag_name }}
 
