@@ -31,12 +31,7 @@ runs:
   using: 'composite'
   steps:
     - name: Publish Bash Functions To Job Steps
-      shell: bash
-      run: |
-        if [ -z "${BASH_ENV}" ]; then
-          export BASH_ENV="${{ github.action_path }}/../scripts/bash_functions.sh"
-          echo "BASH_ENV=${BASH_ENV}" >>"${GITHUB_ENV}"
-        fi
+      uses: Broadshield/actions/actions/bash_functions@dev
 
     - name: Set Env Vars
       id: set_env_vars
@@ -121,4 +116,4 @@ runs:
       id: application_prefix
       shell: bash
       run: |
-        source "${{ github.action_path }}/../scripts/get-app-name.sh"
+        source "${{ github.action_path }}/../../scripts/get-app-name.sh"
