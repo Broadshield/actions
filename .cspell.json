@@ -15,7 +15,15 @@
     ".github/workflows/**",
     ".vscode/*.json"
   ],
-  "dictionaries": ["typescript", "softwareTerms", "node", "en_US", "npm", "misc", "filetypes"],
+  "dictionaries": [
+    "typescript",
+    "softwareTerms",
+    "node",
+    "en_US",
+    "npm",
+    "misc",
+    "filetypes"
+  ],
   "ignoreRegExpList": [
     "/```[\\w\\W]*?```/",
     "/~~~[\\w\\W]*?~~~/",
@@ -47,6 +55,7 @@
     "declarators",
     "destructure",
     "destructured",
+    "elif",
     "errored",
     "erroring",
     "ESLint",
@@ -98,8 +107,14 @@
   "overrides": [
     {
       "filename": "**/*.{ts,js}",
-      "ignoreRegExpList": ["/@[a-z]+/", "/#(end)?region/"],
-      "includeRegExpList": ["/\\/\\*[\\s\\S]*?\\*\\/|([^\\\\:]|^)\\/\\/.*$/", "/(\\/\\/[^\\n\\r]*[\\n\\r]+)/"]
+      "ignoreRegExpList": [
+        "/@[a-z]+/",
+        "/#(end)?region/"
+      ],
+      "includeRegExpList": [
+        "/\\/\\*[\\s\\S]*?\\*\\/|([^\\\\:]|^)\\/\\/.*$/",
+        "/(\\/\\/[^\\n\\r]*[\\n\\r]+)/"
+      ]
     }
   ]
 }

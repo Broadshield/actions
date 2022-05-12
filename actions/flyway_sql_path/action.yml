@@ -1,0 +1,17 @@
+name: Set FLYWAY_SQL_PATH
+description: >
+  Set absolute path to flyway schema for migration
+outputs:
+  flyway-sql-path:
+    value: ${{ steps.path.outputs.flyway-sql-path }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set FLYWAY_SQL_PATH
+      id: path
+      env:
+        FLYWAY_SQL_PATH: ${{ inputs.flyway-sql-path }}
+      shell: bash
+      run: |
+        source "${{ github.action_path }}/../../scripts/flyway/get_sql_path.sh"

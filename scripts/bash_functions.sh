@@ -400,31 +400,37 @@ function install_chamber() {
 }
 
 function configure_bastion_ssh_tunnel() {
-  if [[ -z ${BASTION_HOST} ]] || [[ -z ${BASTION_USER} ]] || [[ -z ${BASTION_PRIVATE_KEY} ]]; then
+  if [ -z "${BASTION_HOST}" ] || [ -z "${BASTION_USER}" ] || [ -z "${BASTION_PRIVATE_KEY}" ]; then
     error_log "One or more essential bastion variables missing: BASTION_PRIVATE_KEY:'${BASTION_PRIVATE_KEY:0:10}' BASTION_HOST:'${BASTION_HOST}' BASTION_USER:'${BASTION_USER}'"
     exit 1
   fi
-  mkdir -p ~/.ssh
-  cat <<EOF >~/.ssh/config
+  mkdir -p "${HOME}/.ssh"
+  if [ ! -f "${HOME}/.ssh/config" ]; then
+    touch "${HOME}/.ssh/config"
+  fi
+  if ! grep -q "remotehost-proxy" "${HOME}/.ssh/config"; then
+    cat <<EOF >>"${HOME}/.ssh/config"
 Host remotehost-proxy
     HostName ${BASTION_HOST}
     User ${BASTION_USER}
-    IdentityFile ~/.ssh/bastion.pem
-    ControlPath ~/.ssh/remotehost-proxy.ctl
+    IdentityFile ${HOME}/.ssh/bastion.pem
+    ControlPath ${HOME}/.ssh/remotehost-proxy.ctl
     ForwardAgent yes
     TCPKeepAlive yes
     ConnectTimeout 5
     ServerAliveInterval 60
     ServerAliveCountMax 30
+
 EOF
-  # ControlPath ~/.ssh/remotehost-proxy.ctl
-  touch ~/.ssh/known_hosts
-  rm -f ~/.ssh/bastion.pem
-  echo "${BASTION_PRIVATE_KEY}" | base64 -d >~/.ssh/bastion.pem
-  chmod 700 ~/.ssh || true
-  chmod 600 ~/.ssh/bastion.pem || true
-  if ! grep -q "${BASTION_HOST}" ~/.ssh/known_hosts; then
-    ssh-keyscan -T 15 -t rsa "${BASTION_HOST}" >>~/.ssh/known_hosts || true
+  fi
+  # ControlPath ${HOME}/.ssh/remotehost-proxy.ctl
+  touch "${HOME}/.ssh/known_hosts"
+  rm -f "${HOME}/.ssh/bastion.pem"
+  echo "${BASTION_PRIVATE_KEY}" | base64 -d >"${HOME}/.ssh/bastion.pem"
+  chmod 700 "${HOME}/.ssh" || true
+  chmod 600 "${HOME}/.ssh/bastion.pem" || true
+  if ! grep -q "${BASTION_HOST}" "${HOME}/.ssh/known_hosts"; then
+    ssh-keyscan -T 15 -t rsa "${BASTION_HOST}" >>"${HOME}/.ssh/known_hosts" || true
   fi
 
 }
@@ -665,6 +671,40 @@ function parse_yaml() {
             printf("%s%s%s=(\"%s\")\n", "'"$prefix"'",vn, $2, $3);
         }
     }' | sed 's/_=/+=/g'
+}
+
+function run_flyway_migration() {
+  docker compose -p flyway --project-directory "${GITHUB_WORKSPACE:-./}" -f "${GITHUB_WORKSPACE:-./}/${FLYWAY_DOCKER_COMPOSE_FILE}" run --rm flyway
+}
+
+function create_mysql_tunnel() {
+  rm -f ~/.ssh/remotehost-proxy.ctl
+
+  # Set up the configuration for ssh tunneling to the bastion server
+  configure_bastion_ssh_tunnel
+
+  # Start the ssh tunnel for MySQL
+  set_env BINDHOST "0.0.0.0"
+  set_env JDBC_LOCAL_PORT "33307"
+  open_bastion_ssh_tunnel
+}
+
+function setup_local_mysql_route_variables() {
+  # Get the local hosts IP
+  if [ -f '/sbin/ip' ]; then
+    # DOCKERHOST="$(/sbin/ip route | awk '/default/ { print  $3}')"
+    DOCKERHOST="$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)"
+    echo "Using the docker hosts ethernet IP ${DOCKERHOST} for accessing mysql"
+
+  else
+    DOCKERHOST=127.0.0.1
+    echo "Using the docker hosts local IP ${DOCKERHOST} for accessing mysql"
+  fi
+  set_env DOCKERHOST "127.0.0.1"
+
+  # Set the mysql host to the docker host to use the tunnel
+  set_env JDBC_HOST "${DOCKERHOST}"
+  set_env JDBC_PORT "${JDBC_LOCAL_PORT}"
 }
 
 export BASH_FUNCTIONS_LOADED=1

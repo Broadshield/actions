@@ -1,0 +1,44 @@
+name: Install chamber
+description: >
+  Install Chamber
+inputs:
+  install-prefix:
+    required: false
+    type: string
+    default: /usr/local/bin
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Publish Bash Functions To Job Steps
+      uses: Broadshield/actions/actions/bash_functions@dev
+    - name: Install Chamber
+      id: path
+      env:
+        INSTALL_PREFIX: ${{ inputs.install-prefix }}
+      shell: bash
+      run: |
+
+        function setup_chamber() {
+          export INSTALL_BIN="${INSTALL_PREFIX}/chamber"
+          export CHAMBER_VERSION="${CHAMBER_VERSION:-v2.10.6}"
+
+          if [ ! -f "${INSTALL_BIN}" ]; then
+            UPDATE_CHAMBER=true
+          elif chamber version | grep -q -v "${CHAMBER_VERSION}"; then
+            UPDATE_CHAMBER=true
+          fi
+
+          if [[ ${UPDATE_CHAMBER} == true ]]; then
+            if [[ "$(uname)" == "Darwin" ]]; then
+              curl -LsS -o "${INSTALL_BIN}" https://github.com/segmentio/chamber/releases/download/${CHAMBER_VERSION}/chamber-${CHAMBER_VERSION}-darwin-amd64
+            elif [[ "$(uname -s | cut -c1-5)" == "Linux" ]]; then
+              curl -LsS -o "${INSTALL_BIN}" https://github.com/segmentio/chamber/releases/download/${CHAMBER_VERSION}/chamber-${CHAMBER_VERSION}-linux-amd64
+            fi
+          fi
+
+          chmod +x "${INSTALL_BIN}"
+        }
+        if setup_chamber; then
+          add_to_path "${INSTALL_PREFIX}"
+        fi

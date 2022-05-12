@@ -1,0 +1,29 @@
+version: '3'
+services:
+  flyway:
+    image: boxfuse/flyway:5.2.4-alpine
+    container_name: flyway
+    network_mode: ${NETWORK_MODE:-host}
+    environment:
+      JDBC_URL_OPTIONS: 'enabledTLSProtocols=TLSv1.2,TLSv1.3&useSSL=true&sslMode=PREFERRED&useServerPrepStmts=true&tcpKeepAlive=true&useCompression=true&useBatchMultiSend=false&connectTimeout=0&socketTimeout=0&usePipelineAuth=false&autoReconnect=true&maxReconnects=3&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=CONVERT_TO_NULL&allowMultiQueries=true'
+      JDBC_URL_TYPE: ${JDBC_URL_TYPE:-jdbc:mysql:}
+      FLYWAY_DRIVER: ${FLYWAY_DRIVER:-com.mysql.cj.jdbc.Driver}
+      JDBC_HOST: ${JDBC_HOST:-host.docker.internal}
+      JDBC_PORT: ${JDBC_PORT:-33306}
+      FLYWAY_SCHEMAS: ${JDBC_DATABASE:-wearsafe_auth}
+      FLYWAY_USER: ${JDBC_USER:-root}
+      FLYWAY_PASSWORD: ${JDBC_PASSWORD:-atemporarypass}
+      REPAIR_FIRST: ${REPAIR_FIRST:-true}
+      FLYWAY_COMMAND: ${FLYWAY_COMMAND:-migrate}
+      AWS_MYSQL_DRIVER_VERSION: ${AWS_MYSQL_DRIVER_VERSION:-1.0.0}
+      JDBC_DRIVER_PATH: ${JDBC_DRIVER_PATH:-/flyway/drivers}
+
+    entrypoint: ['/flyway/flyway_entrypoint.sh']
+    volumes:
+      - '${FLYWAY_SQL_PATH:-./src/main/resources/db/migration/}:/flyway/sql/:rw,cached'
+      - '${GITHUB_WORKSPACE:-.}/.github/deployment/flyway/flyway_entrypoint.sh:/flyway/flyway_entrypoint.sh:ro,cached'
+      - '${JDBC_DRIVER_CACHE:-drivers}:${JDBC_DRIVER_PATH:-/flyway/drivers}'
+
+volumes:
+  drivers:
+    driver: local

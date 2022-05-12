@@ -1,0 +1,123 @@
+name: Flyway Migration
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
+      tag_ref:
+        required: true
+        type: string
+      tag_name:
+        required: true
+        type: string
+      env:
+        required: true
+        type: string
+      flyway-secrets-env:
+        required: true
+        type: string
+        default: dev
+      flyway-sql-path:
+        required: false
+        type: string
+      chamber-aws-region:
+        required: false
+        type: string
+        default: us-east-1
+      chamber-secret-backend:
+        required: false
+        type: string
+        default: ssm
+      flyway-service:
+        required: true
+        type: string
+        default: chamber
+      bastion-service:
+        required: true
+        type: string
+      aws-region:
+        required: true
+        type: string
+        default: us-east-1
+    secrets:
+      envPAT:
+        required: true
+      aws-access-key-id:
+        required: true
+      aws-secret-access-key:
+        required: true
+      role-to-assume:
+        required: false
+      role-external-id:
+        required: false
+
+jobs:
+  flyway:
+    runs-on: ubuntu-20.04
+    name: Flyway Migration
+    env:
+      CHAMBER_SECRET_BACKEND: ${{ inputs.chamber-secret-backend }}
+      CHAMBER_AWS_REGION: ${{ inputs.chamber-aws-region }}
+      CHAMBER_SERVICE_PREFIX: ${{ inputs.chamber-service-prefix }}
+      AWS_REGION: ${{ inputs.aws-region }}
+
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout Code
+        with:
+          ref: ${{ inputs.tag_ref }}
+          fetch-depth: 1
+
+      - name: Publish Bash Functions To Job Steps
+        uses: Broadshield/actions/actions/bash_functions@dev
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        id: dev-credentials
+        with:
+          aws-access-key-id: ${{ secrets.aws-access-key-id }}
+          aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
+          aws-region: ${{ inputs.aws-region }}
+
+      - name: Configure AWS Credentials for prod
+        if: inputs.env == 'prod' && inputs.flyway-secrets-env == 'prod'
+        uses: aws-actions/configure-aws-credentials@v1
+        id: prod-credentials
+        with:
+          aws-access-key-id: ${{ secrets.aws-access-key-id }}
+          aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
+          role-to-assume: ${{ secrets.role-to-assume }}
+          role-external-id: ${{ secrets.role-external-id }}
+          role-duration-seconds: 1200
+          aws-region: ${{ inputs.aws-region }}
+
+      - name: Set schema path
+        id: set-schema-path
+        uses: Broadshield/actions/actions/flyway_sql_path@dev
+        env:
+          FLYWAY_SQL_PATH: ${{ inputs.flyway-sql-path }}
+      - name: Install Chamber
+        uses: Broadshield/actions/actions/install_chamber@dev
+      - name: Get Secrets
+        shell: bash
+        env:
+          AWS_REGION: ${{ inputs.chamber-aws-region }}
+        run: |
+          chamber env ${{ inputs.flyway-service }} | sed -e 's/^export //g' >>"${GITHUB_ENV}"
+          chamber env ${{ inputs.bastion-service }} | sed -e 's/^export //g' >>"${GITHUB_ENV}"
+      - name: Open SSH Tunnel
+        shell: bash
+        run: |
+          create_mysql_tunnel
+          setup_local_mysql_route_variables
+      - name: Run migration
+        uses: Broadshield/actions/actions/run_flyway@dev
+        env:
+          NETWORK_MODE: host
+      - name: Close SSH Tunnel
+        shell: bash
+        if: always()
+        run: |
+          close_bastion_ssh_tunnel

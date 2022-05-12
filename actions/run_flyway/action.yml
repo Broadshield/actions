@@ -1,0 +1,17 @@
+name: Run Flyway Migration
+description: >
+  Run flyway migration
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Publish Bash Functions To Job Steps
+      uses: Broadshield/actions/actions/bash_functions@dev
+    - name: Set FLYWAY_SQL_PATH
+      id: path
+      env:
+        FLYWAY_SQL_PATH: ${{ inputs.flyway-sql-path }}
+        FLYWAY_DOCKER_COMPOSE_FILE: ${{ github.action_path }}/../../scripts/flyway/docker-compose.yml
+      shell: bash
+      run: |
+        run_flyway_migration
