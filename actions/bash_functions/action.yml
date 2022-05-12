@@ -6,7 +6,7 @@ outputs:
     value: ${{ steps.bash_functions.outputs.loaded }}
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Publish Bash Functions To Job Steps
       id: bash_functions
