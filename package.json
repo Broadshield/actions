@@ -74,7 +74,7 @@
     "@Broadshield/prettier-config": "github:Broadshield/prettier-config",
     "@octokit/graphql-schema": "^10.73.0",
     "@prettier/plugin-ruby": "^3.0.0",
-    "@prettier/plugin-xml": "^2.1.0",
+    "@prettier/plugin-xml": "^2.2.0",
     "@trunkio/launcher": "latest",
     "@tsconfig/node16": "^1.0.2",
     "@types/jest": "^27.5.0",
