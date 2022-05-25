@@ -11,7 +11,7 @@ runs:
       id: path
       env:
         FLYWAY_SQL_PATH: ${{ inputs.flyway-sql-path }}
-        FLYWAY_DOCKER_COMPOSE_FILE: ${{ github.action_path }}/scripts/flyway/docker-compose.yml
+        FLYWAY_DOCKER_COMPOSE_FILE: ${{ github.action_path }}/flyway/docker-compose.yml
       shell: bash
       run: |
         run_flyway_migration
