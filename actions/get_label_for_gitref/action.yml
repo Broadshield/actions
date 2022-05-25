@@ -74,6 +74,7 @@ runs:
       with:
         github_token: ${{ inputs.token }}
         release_branch: ${{ env.RELEASE_BRANCH }}
+        branch: ${{ inputs.ref }}
         bump: build
         releases_only: 'false'
         sort_tags: 'true'
