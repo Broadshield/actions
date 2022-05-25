@@ -674,7 +674,7 @@ function parse_yaml() {
 }
 
 function run_flyway_migration() {
-  docker compose -p flyway --project-directory "${GITHUB_WORKSPACE:-./}" -f "${GITHUB_WORKSPACE:-./}/${FLYWAY_DOCKER_COMPOSE_FILE}" run --rm flyway
+  docker compose -p flyway --project-directory "${GITHUB_WORKSPACE:-./}" -f "${FLYWAY_DOCKER_COMPOSE_FILE}" run --rm flyway
 }
 
 function create_mysql_tunnel() {
