@@ -1,14 +1,47 @@
+const pp = 'plugin:prettier/recommended';
+const a = 'auto';
 module.exports = {
   root: true,
   overrides: [
     {
       files: ['*.yml', '*.yaml'],
       parser: 'yaml-eslint-parser',
-      extends: ['plugin:yml/recommended', 'plugin:yml/prettier', 'plugin:prettier/recommended'],
+      extends: ['plugin:yml/recommended', 'plugin:yml/prettier', pp],
     },
     {
-      files: ['*.html', '*.js', '*.json', '*.jsx', '*.md'],
-      extends: ['auto', 'plugin:prettier/recommended'],
+      files: ['./packages/cf-multiple-app-roots/source/*.js'],
+      extends: [a, pp],
+      rules: {
+        'no-plusplus': 'off',
+        'unicorn/prefer-module': 'off',
+        'no-use-before-define': 'off',
+        'no-console': 'off',
+      },
+      parserOptions: {
+        sourceType: 'script',
+        ecmaVersion: 'latest',
+        ecmaFeatures: {
+          impliedStrict: true,
+        },
+      },
+
+      env: {
+        es2015: true,
+      },
+    },
+    {
+      files: ['*.html', '*.cjs', '*.json', '*.jsx', '*.md'],
+      extends: [a, pp],
+      rules: {
+        'no-plusplus': 'off',
+      },
+      parserOptions: {
+        ecmaVersion: 2017,
+      },
+
+      env: {
+        es6: true,
+      },
     },
     {
       plugins: ['actions'],

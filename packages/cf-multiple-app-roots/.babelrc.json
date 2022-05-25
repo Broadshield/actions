@@ -1,0 +1,26 @@
+{
+  "sourceMaps": "inline",
+  "sourceType": "script",
+  "assumptions": [],
+  "forceAllTransforms": true,
+  "ignoreBrowserslistConfig": true,
+  "targets": "es5",
+  "plugins": [
+    [
+      "module:fast-async",
+      {
+        "spec": true
+      }
+    ]
+  ],
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "useBuiltIns": false,
+        "spec": true,
+        "include": []
+      }
+    ]
+  ]
+}

@@ -44,7 +44,7 @@ runs:
     - name: On Release Branch
       id: is_release_branch
       shell: bash
-      run: check_if_on_release_branch
+      run: check_if_on_release_branch "${{ inputs.ref }}"
 
     - name: Get current tag from ref
       id: tag

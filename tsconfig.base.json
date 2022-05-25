@@ -2,7 +2,7 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
-    "checkJs": true,
+    "checkJs": false,
     "composite": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -18,5 +18,9 @@
     "strict": true,
     "target": "ESNext"
   },
-  "include": ["./@types", "./packages/*/source/", "./actions/"]
+  "include": [
+    "./@types",
+    "./packages/**/source/**/*.ts",
+    "./actions/"
+  ]
 }

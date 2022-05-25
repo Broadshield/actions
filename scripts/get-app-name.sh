@@ -13,7 +13,7 @@ fi
 
 function remove_env_from_application_name() {
   local app_name="${1}"
-  node "${DIR}/get-app-name.js" "${app_name}"
+  node "${DIR}/get-app-name.cjs" "${app_name}"
 }
 
 #shellcheck disable=SC2154

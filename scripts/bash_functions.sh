@@ -259,7 +259,7 @@ function get_prerelease_suffix() {
 }
 
 function check_if_on_release_branch() {
-  if [[ ${GITHUB_REF//refs\/heads\//} == "${RELEASE_BRANCH//refs\/heads\//}" ]]; then
+  if [[ ${1//refs\/heads\//} == "${RELEASE_BRANCH//refs\/heads\//}" ]]; then
     set_output on true
     set_env ON_RELEASE_BRANCH true
   else
