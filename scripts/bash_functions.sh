@@ -262,9 +262,11 @@ function check_if_on_release_branch() {
   if [[ ${1//refs\/heads\//} == "${RELEASE_BRANCH//refs\/heads\//}" ]]; then
     set_output on true
     set_env ON_RELEASE_BRANCH true
+    set_env BUMP_VERSION ${BUMP_VERSION:-patch}
   else
     set_output on false
     set_env ON_RELEASE_BRANCH false
+    set_env BUMP_VERSION ${BUMP_VERSION:-build}
   fi
 }
 function getProperty() {
