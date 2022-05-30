@@ -12,6 +12,7 @@ runs:
       env:
         FLYWAY_SQL_PATH: ${{ inputs.flyway-sql-path }}
         FLYWAY_DOCKER_COMPOSE_FILE: ${{ github.action_path }}/flyway/docker-compose.yml
+        FLYWAY_ENTRYPOINT: ${{ github.action_path }}/flyway/flyway_entrypoint.sh
       shell: bash
       run: |
         run_flyway_migration

@@ -21,7 +21,7 @@ services:
     entrypoint: ['/flyway/flyway_entrypoint.sh']
     volumes:
       - '${FLYWAY_SQL_PATH:-./src/main/resources/db/migration/}:/flyway/sql/:rw,cached'
-      - '${GITHUB_WORKSPACE:-.}/.github/deployment/flyway/flyway_entrypoint.sh:/flyway/flyway_entrypoint.sh:ro,cached'
+      - '${FLYWAY_ENTRYPOINT:-.github/deployment/flyway/flyway_entrypoint.sh}:/flyway/flyway_entrypoint.sh:ro,cached'
       - '${JDBC_DRIVER_CACHE:-drivers}:${JDBC_DRIVER_PATH:-/flyway/drivers}'
 
 volumes:
