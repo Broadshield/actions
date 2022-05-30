@@ -28,7 +28,7 @@ outputs:
     value: refs/tags/${{ steps.details.outputs.tag_name }}
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Publish Bash Functions To Job Steps
       uses: Broadshield/actions/actions/bash_functions@dev
@@ -76,13 +76,13 @@ runs:
         release_branch: ${{ env.RELEASE_BRANCH }}
         branch: ${{ inputs.ref }}
         bump: build
-        releases_only: 'false'
-        sort_tags: 'true'
+        releases_only: "false"
+        sort_tags: "true"
         filepath: ${{ steps.file.outputs.path }}
-        prepend_v: 'true'
-        ignore_v_when_searching: 'true'
-        build_delimiter: '+'
-        label_delimiter: '-'
+        prepend_v: "true"
+        ignore_v_when_searching: "true"
+        build_delimiter: "+"
+        label_delimiter: "-"
 
     - name: Generate Git Tag Label
       if: steps.tag.outputs.tag == 'unknown'
@@ -91,6 +91,16 @@ runs:
         GITHUB_TAG: ${{ steps.tag_name.outputs.tag_name }}
         GITHUB_REF: ${{ inputs.ref }}
       run: |
+        if git show-ref --tags tag1 --quiet; then
+          # if tag exists delete it
+          # notice_log "${GITHUB_TAG} Tag already exists, deleting it to create a new one for this ref"
+          # git push --delete origin "${GITHUB_TAG}"
+          GITHUB_TAG=""
+          set_env TAG_PREFIX "v"
+          set_env DEFAULT_BUMP="build"
+        else
+          set_env DEFAULT_BUMP="patch"
+        fi
         set_env GITHUB_TAG "${GITHUB_TAG}"
 
     - name: Push Tag
@@ -100,14 +110,18 @@ runs:
       with:
         github_token: ${{ inputs.token }}
         release_branches: ${{ env.RELEASE_BRANCH }}
-        custom_tag: ${{ steps.tag_name.outputs.tag_name }}
-        tag_prefix: ''
-        create_annotated_tag: 'true'
+        custom_tag: ${{ env.GITHUB_TAG }}
+        default_bump: "${{ env.DEFAULT_BUMP }}"
+        tag_prefix: "${{ env.TAG_PREFIX }}"
+        create_annotated_tag: "true"
 
     - name: Get Label
       id: details
       shell: bash
       run: |
+        if [[ -n "${{steps.tag_version.outputs.new_tag}}" ]]; then
+          set_env GITHUB_TAG "${{ steps.tag_version.outputs.new_tag }}"
+        fi
         # constraint: Member must contain only letters, digits,
         # and the dash character and may not start or end with a dash
         set_output label "$(safe_eb_label_name "${GITHUB_TAG}")"
