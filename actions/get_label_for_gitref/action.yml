@@ -6,7 +6,7 @@ inputs:
     required: true
     type: string
   env:
-    required: true
+    required: false
     type: string
   release_branch:
     required: true
@@ -25,6 +25,8 @@ outputs:
     value: ${{ steps.is_release_branch.outputs.on == 'true' }}
   tag_name:
     value: ${{ steps.details.outputs.tag_name }}
+  tag_name_without_v:
+    value: ${{ steps.details.outputs.tag_name_without_v }}
   label:
     value: ${{ steps.details.outputs.label }}
   application_prefix:
@@ -129,6 +131,7 @@ runs:
         # and the dash character and may not start or end with a dash
         set_output label "$(safe_eb_label_name "${GITHUB_TAG}")"
         set_output tag_name "${GITHUB_TAG}"
+        set_output tag_name_without_v "${GITHUB_TAG#v}"
 
     - name: Get application prefix
       id: application_prefix
