@@ -37,7 +37,7 @@ outputs:
     value: ${{ steps.commit.outputs.commit == 'true' }}
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Publish Bash Functions To Job Steps
       uses: Broadshield/actions/actions/bash_functions@dev
@@ -54,6 +54,7 @@ runs:
         set_env GITHUB_REF "${{ inputs.ref }}"
         set_env RELEASE_BRANCH "${{ inputs.release_branch }}"
         set_env BUMP_RELEASE "${{ inputs.bump_release }}"
+        set_env COMMITISH "$(git rev-parse HEAD)"
 
     - name: On Release Branch
       id: is_release_branch
@@ -90,13 +91,13 @@ runs:
         release_branch: ${{ env.RELEASE_BRANCH }}
         branch: ${{ inputs.ref }}
         bump: ${{ env.BUMP_RELEASE }}
-        releases_only: 'false'
-        sort_tags: 'true'
+        releases_only: "false"
+        sort_tags: "true"
         filepath: ${{ steps.file.outputs.path }}
-        prepend_v: 'true'
-        ignore_v_when_searching: 'true'
-        build_delimiter: '+'
-        label_delimiter: '-'
+        prepend_v: "true"
+        ignore_v_when_searching: "true"
+        build_delimiter: "+"
+        label_delimiter: "-"
 
     - name: Generate Git Tag Label
       if: steps.tag.outputs.tag == 'unknown'
@@ -144,7 +145,7 @@ runs:
       run: |
         if git commit -m "Update application version to ${tag_name} [Version Updated]"; then
           git push && set_output commit true
-          set_env GITHUB_REF "$(git rev-parse HEAD)"
+          set_env COMMITISH "$(git rev-parse HEAD)"
         fi
 
     - name: Push Tag
@@ -152,13 +153,13 @@ runs:
       if: steps.tag.outputs.tag == 'unknown'
       uses: mathieudutour/github-tag-action@v6.0
       with:
-        commit_sha: ${{ env.GITHUB_REF }}
+        commit_sha: ${{ env.COMMITISH }}
         github_token: ${{ inputs.token }}
         release_branches: ${{ env.RELEASE_BRANCH }}
         custom_tag: ${{ env.GITHUB_TAG }}
-        default_bump: '${{ env.BUMP_RELEASE }}'
-        tag_prefix: '${{ env.TAG_PREFIX }}'
-        create_annotated_tag: 'true'
+        default_bump: "${{ env.BUMP_RELEASE }}"
+        tag_prefix: "${{ env.TAG_PREFIX }}"
+        create_annotated_tag: "true"
 
     - name: Get Label
       id: details
