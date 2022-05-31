@@ -33,12 +33,18 @@ outputs:
     value: ${{ steps.application_prefix.outputs.app_prefix }}
   tag_ref:
     value: refs/tags/${{ steps.details.outputs.tag_name }}
+  commit:
+    value: ${{ steps.commit.outputs.commit == 'true' }}
 
 runs:
   using: 'composite'
   steps:
     - name: Publish Bash Functions To Job Steps
       uses: Broadshield/actions/actions/bash_functions@dev
+    - name: Git User Config
+      run: |
+        git config --global user.email "github-actions@users.noreply.github.com"
+        git config --global user.name "github-actions"
 
     - name: Set Env Vars
       id: set_env_vars
@@ -108,11 +114,45 @@ runs:
         fi
         set_env GITHUB_TAG "${GITHUB_TAG}"
 
+    - name: Update tag in application [gradle]
+      if: inputs.framework == 'gradle' && steps.is_release_branch.outputs.on == 'true'
+      env:
+        tag_name: ${{ steps.bump.outputs.tag_name || steps.tag_name.outputs.tag_name }}
+      run: |
+
+        if [ -n "${tag_name}" ]; then
+          sed -E "s/(^version([\t ]+)?=([\t ]+)?).*\$/\1${tag_name}/" ${{ steps.file.outputs.path }} | tee ${{ steps.file.outputs.path }}.tmp
+          mv ${{ steps.file.outputs.path }}.tmp ${{ steps.file.outputs.path }}
+          git add ${{ steps.file.outputs.path }}
+        fi
+
+    - name: Update tag in application [maven]
+      if: inputs.framework == 'maven' && steps.is_release_branch.outputs.on == 'true'
+      env:
+        tag_name: ${{ steps.bump.outputs.tag_name || steps.tag_name.outputs.tag_name }}
+      run: |
+        if [ -n "${tag_name}" ]; then
+          mvn versions:set "-DnewVersion=${tag_name}" "--file=${{ steps.file.outputs.path }}" || true
+          git add ${{ steps.file.outputs.path }}
+        fi
+
+    - name: Commit changes
+      id: commit
+      if: steps.is_release_branch.outputs.on == 'true'
+      env:
+        tag_name: ${{ steps.bump.outputs.tag_name || steps.tag_name.outputs.tag_name }}
+      run: |
+        if git commit -m "Update application version to ${tag_name} [Version Updated]"; then
+          git push && set_output commit true
+          set_env GITHUB_REF "$(git rev-parse HEAD)"
+        fi
+
     - name: Push Tag
       id: tag_version
       if: steps.tag.outputs.tag == 'unknown'
       uses: mathieudutour/github-tag-action@v6.0
       with:
+        commit_sha: ${{ env.GITHUB_REF }}
         github_token: ${{ inputs.token }}
         release_branches: ${{ env.RELEASE_BRANCH }}
         custom_tag: ${{ env.GITHUB_TAG }}
