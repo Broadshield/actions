@@ -15,12 +15,8 @@ inputs:
   bump_release:
     required: false
     default: patch
-    type: choice
-    options:
-      - build
-      - patch
-      - minor
-      - major
+    description: build, patch, minor, major
+    type: string
   token:
     required: true
 
