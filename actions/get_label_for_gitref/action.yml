@@ -37,11 +37,12 @@ outputs:
     value: ${{ steps.commit.outputs.commit == 'true' }}
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Publish Bash Functions To Job Steps
       uses: Broadshield/actions/actions/bash_functions@dev
     - name: Git User Config
+      shell: bash
       run: |
         git config --global user.email "github-actions@users.noreply.github.com"
         git config --global user.name "github-actions"
@@ -91,13 +92,13 @@ runs:
         release_branch: ${{ env.RELEASE_BRANCH }}
         branch: ${{ inputs.ref }}
         bump: ${{ env.BUMP_RELEASE }}
-        releases_only: "false"
-        sort_tags: "true"
+        releases_only: 'false'
+        sort_tags: 'true'
         filepath: ${{ steps.file.outputs.path }}
-        prepend_v: "true"
-        ignore_v_when_searching: "true"
-        build_delimiter: "+"
-        label_delimiter: "-"
+        prepend_v: 'true'
+        ignore_v_when_searching: 'true'
+        build_delimiter: '+'
+        label_delimiter: '-'
 
     - name: Generate Git Tag Label
       if: steps.tag.outputs.tag == 'unknown'
@@ -117,6 +118,7 @@ runs:
 
     - name: Update tag in application [gradle]
       if: inputs.framework == 'gradle' && steps.is_release_branch.outputs.on == 'true'
+      shell: bash
       env:
         tag_name: ${{ steps.bump.outputs.tag_name || steps.tag_name.outputs.tag_name }}
       run: |
@@ -129,6 +131,7 @@ runs:
 
     - name: Update tag in application [maven]
       if: inputs.framework == 'maven' && steps.is_release_branch.outputs.on == 'true'
+      shell: bash
       env:
         tag_name: ${{ steps.bump.outputs.tag_name || steps.tag_name.outputs.tag_name }}
       run: |
@@ -140,6 +143,7 @@ runs:
     - name: Commit changes
       id: commit
       if: steps.is_release_branch.outputs.on == 'true'
+      shell: bash
       env:
         tag_name: ${{ steps.bump.outputs.tag_name || steps.tag_name.outputs.tag_name }}
       run: |
@@ -157,9 +161,9 @@ runs:
         github_token: ${{ inputs.token }}
         release_branches: ${{ env.RELEASE_BRANCH }}
         custom_tag: ${{ env.GITHUB_TAG }}
-        default_bump: "${{ env.BUMP_RELEASE }}"
-        tag_prefix: "${{ env.TAG_PREFIX }}"
-        create_annotated_tag: "true"
+        default_bump: '${{ env.BUMP_RELEASE }}'
+        tag_prefix: '${{ env.TAG_PREFIX }}'
+        create_annotated_tag: 'true'
 
     - name: Get Label
       id: details
