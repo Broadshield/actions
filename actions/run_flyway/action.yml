@@ -81,15 +81,15 @@ runs:
   using: 'composite'
   steps:
     - name: Publish Bash Functions To Job Steps
-      uses: Broadshield/actions/actions/bash_functions@dev
+      uses: Broadshield/actions/actions/bash_functions@feature/flyway_action_update
 
     - name: Wait until MySQL is available
-      uses: Broadshield/actions/actions/wait_for_port@dev
+      uses: Broadshield/actions/actions/wait_for_port@feature/flyway_action_update
       with:
         port: ${{ inputs.jdbc-port }}
         timeout: 60
         host: ${{ inputs.jdbc-host }}
-        ping-message: "/* ping */"
+        ping-message: '/* ping */'
 
     - name: Set Run Migration
       id: path
