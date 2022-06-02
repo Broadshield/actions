@@ -1,5 +1,6 @@
 # Local Only
 /.inprogress/
+**/output/
 # Logs
 logs
 *.log

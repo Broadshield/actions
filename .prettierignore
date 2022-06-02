@@ -1,6 +1,6 @@
-dist/
-lib/
-node_modules/
+/dist/
+/lib/
+**/node_modules/
 .git/
 README.md
 /.trunk/
@@ -9,3 +9,12 @@ README.md
 package-lock.json
 yarn.lock
 package.json
+/.yarn/
+**/output/
+**/*.min.*
+**/*.map
+**/*.gz
+**/*.gz.map
+**/*.gz.min.*
+**/*.zip
+/.inprogress/
