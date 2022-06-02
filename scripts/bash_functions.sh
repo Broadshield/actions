@@ -591,7 +591,6 @@ function deploy_asset() {
     eb_run deploy \
       --version "${DEPLOY_VERSION}" \
       --staged \
-      --label "${DEPLOY_VERSION}" \
       --timeout "${TIMEOUT_IN_MINUTES:-20}" \
       "${ENVIRONMENT_NAME}"
   fi
