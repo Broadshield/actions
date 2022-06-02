@@ -135,6 +135,7 @@ jobs:
           flyway-user: ${{ env.JDBC_USER }}
           flyway-password: ${{ env.JDBC_PASSWORD }}
           jdbc-host: ${{ env.JDBC_HOST }}
+          jdbc-port: ${{ env.JDBC_PORT }}
           jdbc-url-type: ${{ env.JDBC_URL_TYPE }}
           jdbc-driver-cache-path: ${{ env.JDBC_DRIVER_CACHE_PATH }}
           aws-driver-version: ${{ inputs.aws-driver-version }}

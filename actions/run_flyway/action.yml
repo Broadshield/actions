@@ -77,13 +77,20 @@ inputs:
     type: string
     default: 'host'
 
-
-
 runs:
   using: 'composite'
   steps:
     - name: Publish Bash Functions To Job Steps
       uses: Broadshield/actions/actions/bash_functions@dev
+
+    - name: Wait until MySQL is available
+      uses: Broadshield/actions/actions/wait_for_port@dev
+      with:
+        port: ${{ inputs.jdbc-port }}
+        timeout: 60
+        host: ${{ inputs.jdbc-host }}
+        ping-message: "/* ping */"
+
     - name: Set Run Migration
       id: path
       env:
