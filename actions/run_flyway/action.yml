@@ -8,7 +8,7 @@ inputs:
   flyway-driver:
     required: false
     type: string
-    default: "software.aws.rds.jdbc.mysql.Driver"
+    default: 'software.aws.rds.jdbc.mysql.Driver'
   flyway-schemas:
     required: false
     type: string
@@ -25,41 +25,41 @@ inputs:
   flyway-command:
     required: false
     type: string
-    default: "migrate"
+    default: 'migrate'
   jdbc-driver-path:
     required: false
     type: string
-    default: "/flyway/drivers"
+    default: '/flyway/drivers'
   jdbc-driver-cache-path:
     required: false
     type: string
   jdbc-url-options:
     required: false
     type: string
-    default: "enabledTLSProtocols=TLSv1.2,TLSv1.3&useSSL=true&sslMode=PREFERRED&useServerPrepStmts=true&tcpKeepAlive=true&useCompression=true&useBatchMultiSend=false&connectTimeout=0&socketTimeout=0&usePipelineAuth=false&autoReconnect=true&maxReconnects=3&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=CONVERT_TO_NULL&allowMultiQueries=true"
+    default: 'enabledTLSProtocols=TLSv1.2,TLSv1.3&useSSL=true&sslMode=PREFERRED&useServerPrepStmts=true&tcpKeepAlive=true&useCompression=true&useBatchMultiSend=false&connectTimeout=0&socketTimeout=0&usePipelineAuth=false&autoReconnect=true&maxReconnects=3&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=CONVERT_TO_NULL&allowMultiQueries=true'
   jdbc-url-type:
     required: false
     type: string
-    default: "jdbc:mysql:aws:"
+    default: 'jdbc:mysql:aws:'
   jdbc-host:
     required: false
     type: string
-    default: "127.0.0.1"
+    default: '127.0.0.1'
   jdbc-port:
     required: false
     type: string
-    default: "3306"
+    default: '3306'
   jdbc-database:
     required: false
     type: string
   flyway-docker-image:
     required: false
     type: string
-    default: "boxfuse/flyway:5.2.4-alpine"
+    default: 'boxfuse/flyway:5.2.4-alpine'
   flyway-connect-retries:
     required: false
     type: string
-    default: "1"
+    default: '1'
   flyway-validate-on-migrate:
     required: false
     type: boolean
@@ -71,28 +71,12 @@ inputs:
   aws-driver-version:
     required: false
     type: string
-    default: "1.0.0"
+    default: '1.0.0'
+  network-mode:
+    required: false
+    type: string
+    default: 'host'
 
-env:
-  FLYWAY_CONNECT_RETRIES: ${{ inputs.flyway-connect-retries }}
-  FLYWAY_VALIDATE_ON_MIGRATE: ${{ inputs.flyway-validate-on-migrate }}
-  FLYWAY_CLEAN_DISABLED: ${{ inputs.flyway-clean-disabled }}
-  FLYWAY_SQL_PATH: ${{ inputs.flyway-sql-path }}
-  FLYWAY_USER: ${{ inputs.flyway-user }}
-  FLYWAY_PASSWORD: ${{ inputs.flyway-password }}
-  FLYWAY_COMMAND: ${{ inputs.flyway-command }}
-  FLYWAY_DOCKER_IMAGE: ${{ inputs.flyway-docker-image }}
-  FLYWAY_SCHEMAS: ${{ inputs.flyway-schemas }}
-  FLYWAY_DRIVER: ${{ inputs.flyway-driver }}
-  JDBC_URL_OPTIONS: ${{ inputs.jdbc-url-options }}
-  JDBC_HOST: ${{ inputs.jdbc-host }}
-  JDBC_PORT: ${{ inputs.jdbc-port }}
-  JDBC_URL_TYPE: ${{ inputs.jdbc-url-type }}
-  JDBC_DATABASE: ${{ inputs.jdbc-database }}
-  JDBC_DRIVER_PATH: ${{ inputs.jdbc-driver-path }}
-  JDBC_DRIVER_CACHE: ${{ inputs.jdbc-driver-cache-path }}
-  AWS_MYSQL_DRIVER_VERSION: ${{ inputs.aws-driver-version }}
-  REPAIR_FIRST: ${{ inputs.flyway-repair-first }}
 
 
 runs:
@@ -103,11 +87,31 @@ runs:
     - name: Set Run Migration
       id: path
       env:
-        FLYWAY_URL: ${{ env.JDBC_URL_TYPE }}//${{ env.JDBC_HOST }}:${{ env.JDBC_PORT }}?${{ env.JDBC_URL_OPTIONS }}
+        FLYWAY_CONNECT_RETRIES: ${{ inputs.flyway-connect-retries }}
+        FLYWAY_VALIDATE_ON_MIGRATE: ${{ inputs.flyway-validate-on-migrate }}
+        FLYWAY_CLEAN_DISABLED: ${{ inputs.flyway-clean-disabled }}
+        FLYWAY_SQL_PATH: ${{ inputs.flyway-sql-path }}
+        FLYWAY_USER: ${{ inputs.flyway-user }}
+        FLYWAY_PASSWORD: ${{ inputs.flyway-password }}
+        FLYWAY_COMMAND: ${{ inputs.flyway-command }}
+        FLYWAY_DOCKER_IMAGE: ${{ inputs.flyway-docker-image }}
+        FLYWAY_SCHEMAS: ${{ inputs.flyway-schemas }}
+        FLYWAY_DRIVER: ${{ inputs.flyway-driver }}
+        JDBC_URL_OPTIONS: ${{ inputs.jdbc-url-options }}
+        JDBC_HOST: ${{ inputs.jdbc-host }}
+        JDBC_PORT: ${{ inputs.jdbc-port }}
+        JDBC_URL_TYPE: ${{ inputs.jdbc-url-type }}
+        JDBC_DATABASE: ${{ inputs.jdbc-database }}
+        JDBC_DRIVER_PATH: ${{ inputs.jdbc-driver-path }}
+        JDBC_DRIVER_CACHE: ${{ inputs.jdbc-driver-cache-path }}
+        AWS_MYSQL_DRIVER_VERSION: ${{ inputs.aws-driver-version }}
+        REPAIR_FIRST: ${{ inputs.flyway-repair-first }}
+        NETWORK_MODE: ${{ inputs.network-mode }}
         FLYWAY_DOCKER_COMPOSE_FILE: ${{ github.action_path }}/flyway/docker-compose.yml
         FLYWAY_ENTRYPOINT: ${{ github.action_path }}/flyway/flyway_entrypoint.sh
       shell: bash
       run: |
+        export JDBC_PORT=${JDBC_PORT%%\'}
         export FLYWAY_URL="${JDBC_URL_TYPE}//${JDBC_HOST}:${JDBC_PORT}${JDBC_DATABASE:+/${JDBC_DATABASE}}?${JDBC_URL_OPTIONS}
         if run_flyway_migration;then
           notice_log "Successfully ran Flyway $FLYWAY_COMMAND to ${FLYWAY_URL}"

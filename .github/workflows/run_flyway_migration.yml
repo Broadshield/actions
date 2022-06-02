@@ -41,6 +41,10 @@ on:
         required: true
         type: string
         default: us-east-1
+      aws-driver-version:
+        required: false
+        type: string
+        default: "1.0.0"
     secrets:
       envPAT:
         required: true
@@ -62,6 +66,7 @@ jobs:
       CHAMBER_AWS_REGION: ${{ inputs.chamber-aws-region }}
       CHAMBER_SERVICE_PREFIX: ${{ inputs.chamber-service-prefix }}
       AWS_REGION: ${{ inputs.aws-region }}
+      JDBC_DRIVER_CACHE_PATH: ${{ github.workspace }}/.cache/jdbc_drivers
 
     steps:
       - uses: actions/checkout@v3
@@ -98,8 +103,10 @@ jobs:
         uses: Broadshield/actions/actions/flyway_sql_path@dev
         env:
           FLYWAY_SQL_PATH: ${{ inputs.flyway-sql-path }}
+
       - name: Install Chamber
         uses: Broadshield/actions/actions/install_chamber@dev
+
       - name: Get Secrets
         shell: bash
         env:
@@ -107,15 +114,31 @@ jobs:
         run: |
           chamber env ${{ inputs.flyway-service }} | sed -e 's/^export //g' >>"${GITHUB_ENV}"
           chamber env ${{ inputs.bastion-service }} | sed -e 's/^export //g' >>"${GITHUB_ENV}"
+
       - name: Open SSH Tunnel
         shell: bash
         run: |
           create_mysql_tunnel
           setup_local_mysql_route_variables
+
+      - uses: actions/cache@v3
+        with:
+          path: ${{ env.JDBC_DRIVER_CACHE_PATH }}
+          key: ${{runner.os}}-jdbc-${{ inputs.aws-driver-version }}
+          restore-keys: |
+            ${{runner.os}}-jdbc-
+
       - name: Run migration
         uses: Broadshield/actions/actions/run_flyway@dev
-        env:
-          NETWORK_MODE: host
+        with:
+          flyway-sql-path: ${{ steps.set-schema-path.outputs.flyway-sql-path }}
+          flyway-user: ${{ env.JDBC_USER }}
+          flyway-password: ${{ env.JDBC_PASSWORD }}
+          jdbc-host: ${{ env.JDBC_HOST }}
+          jdbc-url-type: ${{ env.JDBC_URL_TYPE }}
+          jdbc-driver-cache-path: ${{ env.JDBC_DRIVER_CACHE_PATH }}
+          aws-driver-version: ${{ inputs.aws-driver-version }}
+
       - name: Close SSH Tunnel
         shell: bash
         if: always()

@@ -676,7 +676,21 @@ function parse_yaml() {
 }
 
 function run_flyway_migration() {
-  docker compose -p flyway --project-directory "${GITHUB_WORKSPACE:-./}" -f "${FLYWAY_DOCKER_COMPOSE_FILE}" run --rm flyway
+  docker context use "default"
+  if [[ -z "$(docker network list -q -f 'name=api-backend')" ]]; then
+    docker network create --driver bridge api-backend
+    NETWORK_CREATED=true
+  fi
+  if docker compose -p flyway --project-directory "${GITHUB_WORKSPACE:-./}" -f "${FLYWAY_DOCKER_COMPOSE_FILE}" run --rm flyway; then
+    ERRORED=false
+  fi
+  if [[ "${NETWORK_CREATED}" == true ]]; then
+    docker network rm api-backend || true
+  fi
+  if [[ "${ERRORED}" != false ]]; then
+    error_log "Flyway migration failed"
+    return 1
+  fi
 }
 
 function create_mysql_tunnel() {

@@ -1,0 +1,44 @@
+name: Check if port is open on host
+description: >
+  Check if port is open on host
+inputs:
+  host:
+    required: true
+    type: string
+  port:
+    required: false
+    type: string
+  ping-message:
+    required: false
+    type: string
+    default: ""
+  timeout:
+    required: false
+    default: "120"
+    type: string
+  fail-on-error:
+    required: false
+    default: true
+    type: boolean
+
+outputs:
+  available:
+    value: ${{ steps.is_release_branch.outputs.on == 'true' }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Publish Bash Functions To Job Steps
+      uses: Broadshield/actions/actions/bash_functions@dev
+    - name: wait for port
+      continue-on-error: ${{ inputs.fail-on-error }}
+      shell: bash
+      env:
+        PORT_TIMEOUT: "${{ inputs.timeout }}"
+      run: |
+        if bash "${{ github.action_path }}/../../scripts/wait_for_port.sh" "${{ inputs.host }}" "${{ inputs.port }}" "${{ inputs.ping-message }}";then
+          set_output available true
+        else
+          set_output available false
+          exit 1
+        fi
