@@ -1,6 +1,10 @@
 name: Set FLYWAY_SQL_PATH
 description: >
   Set absolute path to flyway schema for migration
+inputs:
+  flyway-sql-path:
+    required: false
+    type: string
 outputs:
   flyway-sql-path:
     value: ${{ steps.path.outputs.flyway-sql-path }}

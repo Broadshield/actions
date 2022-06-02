@@ -1,7 +1,7 @@
 version: '3'
 services:
   flyway:
-    image: boxfuse/flyway:5.2.4-alpine
+    image: ${{ FLYWAY_DOCKER_IMAGE:-boxfuse/flyway:5.2.4-alpine }}
     container_name: flyway
     network_mode: ${NETWORK_MODE:-host}
     environment:
@@ -20,10 +20,13 @@ services:
 
     entrypoint: ['/flyway/flyway_entrypoint.sh']
     volumes:
+      - '${FLYWAY_CONFIG_DIR:-config}:/flyway/config'
       - '${FLYWAY_SQL_PATH:-./src/main/resources/db/migration/}:/flyway/sql/:rw,cached'
       - '${FLYWAY_ENTRYPOINT:-.github/deployment/flyway/flyway_entrypoint.sh}:/flyway/flyway_entrypoint.sh:ro,cached'
       - '${JDBC_DRIVER_CACHE:-drivers}:${JDBC_DRIVER_PATH:-/flyway/drivers}'
 
 volumes:
+  config:
+    driver: local
   drivers:
     driver: local
