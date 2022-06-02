@@ -1,11 +1,10 @@
 version: '3'
 services:
   flyway:
-    image: ${ FLYWAY_DOCKER_IMAGE:-boxfuse/flyway:5.2.4-alpine }
+    image: ${FLYWAY_DOCKER_IMAGE:-boxfuse/flyway:5.2.4-alpine}
     container_name: flyway
     network_mode: ${NETWORK_MODE:-host}
     environment:
-      - JDBC_URL_OPTIONS
       - FLYWAY_CONNECT_RETRIES
       - FLYWAY_VALIDATE_ON_MIGRATE
       - FLYWAY_CLEAN_DISABLED
@@ -16,6 +15,7 @@ services:
       - FLYWAY_DOCKER_IMAGE
       - FLYWAY_SCHEMAS
       - FLYWAY_DRIVER
+      - FLYWAY_URL
       - JDBC_URL_OPTIONS
       - JDBC_HOST
       - JDBC_PORT
@@ -25,7 +25,6 @@ services:
       - JDBC_DRIVER_CACHE
       - AWS_MYSQL_DRIVER_VERSION
       - REPAIR_FIRST
-      - NETWORK_MODE
 
     entrypoint: ['/flyway/flyway_entrypoint.sh']
     volumes:

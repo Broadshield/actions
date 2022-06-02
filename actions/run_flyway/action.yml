@@ -55,7 +55,7 @@ inputs:
   flyway-docker-image:
     required: false
     type: string
-    default: 'boxfuse/flyway:5.2.4-alpine'
+    default: boxfuse/flyway:5.2.4-alpine
   flyway-connect-retries:
     required: false
     type: string
