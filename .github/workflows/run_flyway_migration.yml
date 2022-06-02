@@ -129,7 +129,7 @@ jobs:
             ${{runner.os}}-jdbc-
 
       - name: Run migration
-        uses: Broadshield/actions/actions/run_flyway@feature/flyway_action_update
+        uses: Broadshield/actions/actions/run_flyway@dev
         with:
           flyway-sql-path: ${{ steps.set-schema-path.outputs.flyway-sql-path }}
           flyway-user: ${{ env.JDBC_USER }}
