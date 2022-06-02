@@ -72,6 +72,7 @@
   },
   "devDependencies": {
     "@Broadshield/prettier-config": "^0.3.2",
+    "@bitflight-devops/github-action-readme-generator": "^1.1.5",
     "@octokit/graphql-schema": "^10.73.0",
     "@prettier/plugin-ruby": "^3.1.2",
     "@prettier/plugin-xml": "^2.2.0",
@@ -124,7 +125,6 @@
     "eslint-plugin-unicorn": "^42.0.0",
     "eslint-plugin-yml": "^1.0.0",
     "esm": "^3.2.25",
-    "github-action-readme-generator": "^1.0.13",
     "husky": "^8.0.1",
     "jest": "^28.1.0",
     "jest-circus": "^28.1.0",

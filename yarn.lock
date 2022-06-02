@@ -12,6 +12,7 @@ __metadata:
     "@Broadshield/prettier-config": ^0.3.2
     "@actions/core": ^1.8.2
     "@actions/github": ^5.0.3
+    "@bitflight-devops/github-action-readme-generator": ^1.1.5
     "@octokit/graphql": ^4.8.0
     "@octokit/graphql-schema": ^10.73.0
     "@octokit/rest": ^18.12.0
@@ -67,7 +68,6 @@ __metadata:
     eslint-plugin-unicorn: ^42.0.0
     eslint-plugin-yml: ^1.0.0
     esm: ^3.2.25
-    github-action-readme-generator: ^1.0.13
     graphql: ^16.5.0
     husky: ^8.0.1
     jest: ^28.1.0
@@ -172,33 +172,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@actions/core@npm:^1.6.0":
-  version: 1.7.0
-  resolution: "@actions/core@npm:1.7.0"
-  dependencies:
-    "@actions/http-client": ^1.0.11
-  checksum: 91ea8a5dd88e779bc1140f205e7b2bd5d1395aaa3634e72515f8a6a2c87cb7d241fb6bf2f0e2b2a3550e6404a8f9502dada56527618e4a3823abf040dff83f92
-  languageName: node
-  linkType: hard
-
 "@actions/core@npm:^1.8.2":
   version: 1.8.2
   resolution: "@actions/core@npm:1.8.2"
   dependencies:
     "@actions/http-client": ^2.0.1
   checksum: 1cd1a47f751501900a579e641565bbe13a09d626507a4fa46b51e6a959a74a89134490ae7311570ed8ec1735ada83bcfde81a456ea4d2e24e323c16e94e39fd1
-  languageName: node
-  linkType: hard
-
-"@actions/github@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@actions/github@npm:5.0.1"
-  dependencies:
-    "@actions/http-client": ^1.0.11
-    "@octokit/core": ^3.6.0
-    "@octokit/plugin-paginate-rest": ^2.17.0
-    "@octokit/plugin-rest-endpoint-methods": ^5.13.0
-  checksum: 4c8541cbe8332a616a405c84a67566c2e0ef07f401967ab72f8e3608e68bbc73f94bff1b002d28147a58f812e9546b475f58629514532882f59200073b80bd0b
   languageName: node
   linkType: hard
 
@@ -211,15 +190,6 @@ __metadata:
     "@octokit/plugin-paginate-rest": ^2.17.0
     "@octokit/plugin-rest-endpoint-methods": ^5.13.0
   checksum: 1d8e8c5c351dd069a96b1ec39c8f609a2bbcb135d69bb8d9bb5c00752bdff81ec6d67ca90eb77dedc657cd630af484538f881c16eb5b008fd3ee5f430d0c38d2
-  languageName: node
-  linkType: hard
-
-"@actions/http-client@npm:^1.0.11":
-  version: 1.0.11
-  resolution: "@actions/http-client@npm:1.0.11"
-  dependencies:
-    tunnel: 0.0.6
-  checksum: 2c72834ec36a121ae95d2cb61fd28234eae2ab265a2aefe857a9eeb788ea77b284ad727ecd3c67fefd1920d5f2800b6c1ba6916b39d44f81f293b4b0020d367c
   languageName: node
   linkType: hard
 
@@ -1659,6 +1629,26 @@ __metadata:
   version: 0.2.3
   resolution: "@bcoe/v8-coverage@npm:0.2.3"
   checksum: 850f9305536d0f2bd13e9e0881cb5f02e4f93fad1189f7b2d4bebf694e3206924eadee1068130d43c11b750efcc9405f88a8e42ef098b6d75239c0f047de1a27
+  languageName: node
+  linkType: hard
+
+"@bitflight-devops/github-action-readme-generator@npm:^1.1.5":
+  version: 1.1.5
+  resolution: "@bitflight-devops/github-action-readme-generator@npm:1.1.5::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40bitflight-devops%2Fgithub-action-readme-generator%2F1.1.5%2Ff82f9d721b4195d0e61e96f0944bb0f51721d41f2725b82c6cad54206bfdce3c"
+  dependencies:
+    "@actions/core": ^1.8.2
+    "@actions/github": ^5.0.3
+    chalk: ^5.0.1
+    date-format: ^4.0.10
+    js-yaml: ^4.1.0
+    markdown-table: ^3.0.2
+    nconf: "github:indexzero/nconf"
+    node-emoji: ^1.11.0
+    prettier: ^2.6.2
+    reflect-metadata: ^0.1.13
+  bin:
+    github-action-readme-generator: dist/index.cjs
+  checksum: fbe9757b576c801ced4fb960b369294c3c2e70749fd929541e132eae586077d6e62ababd64c8a9b83939b33a7be7e9bd545dc6443b2d1d385be0b3c5dcfedfad
   languageName: node
   linkType: hard
 
@@ -4352,10 +4342,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-format@npm:^4.0.6":
-  version: 4.0.9
-  resolution: "date-format@npm:4.0.9"
-  checksum: c9cdc5123a9b99de5b7d6bc35197bf6bc01581c795b1cd4e24d72e29d7a535d3a6cbd6f993d90b1ff6d5d51d51a9c969730a8fb8cc8977eee3430c5320e2418a
+"date-format@npm:^4.0.10":
+  version: 4.0.11
+  resolution: "date-format@npm:4.0.11"
+  checksum: 9e1265a557dc44a55d003a2bcb89012c605641f0bab26a0276eef308a4d491da9cae7001839b5d080a2e6ffadace49e8d8c62072164880cba721ec6d0a48c56d
   languageName: node
   linkType: hard
 
@@ -6162,27 +6152,6 @@ __metadata:
     through2: ~2.0.0
     traverse: ~0.6.6
   checksum: 57294e72f91920d3262ff51fb0fd81dba1465c9e1b25961e19c757ae39bb38e72dd4a5da40649eeb368673b08be449a0844a2bafc0c0ded7375a8a56a6af8640
-  languageName: node
-  linkType: hard
-
-"github-action-readme-generator@npm:^1.0.13":
-  version: 1.0.13
-  resolution: "github-action-readme-generator@npm:1.0.13"
-  dependencies:
-    "@actions/core": ^1.6.0
-    "@actions/github": ^5.0.1
-    chalk: ^5.0.1
-    date-format: ^4.0.6
-    js-yaml: ^4.1.0
-    markdown-table: ^3.0.2
-    nconf: "github:indexzero/nconf"
-    node-emoji: ^1.11.0
-    prettier: ^2.6.2
-    reflect-metadata: ^0.1.13
-  bin:
-    github-action-readme-generator: dist/index.js
-  checksum: 97c327db441efe9e00f72c6f049ad4d826c5e561b82b8a7547a66a3918bd412bcf06e3ba53e1dfcbbced9e84048889066b326e4eef38e93171011dbfde5c215c
-  conditions: "!os=win32"
   languageName: node
   linkType: hard
 
@@ -11661,7 +11630,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tunnel@npm:0.0.6, tunnel@npm:^0.0.6":
+"tunnel@npm:^0.0.6":
   version: 0.0.6
   resolution: "tunnel@npm:0.0.6"
   checksum: c362948df9ad34b649b5585e54ce2838fa583aa3037091aaed66793c65b423a264e5229f0d7e9a95513a795ac2bd4cb72cda7e89a74313f182c1e9ae0b0994fa
