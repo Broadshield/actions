@@ -119,7 +119,7 @@ runs:
       shell: bash
       run: |
         export JDBC_PORT="${JDBC_PORT%%\'}"
-        export FLYWAY_URL="${JDBC_URL_TYPE}//${JDBC_HOST}:${JDBC_PORT}${JDBC_DATABASE:+/${JDBC_DATABASE}}?${JDBC_URL_OPTIONS}"
+        export FLYWAY_URL="${JDBC_URL_TYPE}//${JDBC_HOST}:${JDBC_PORT}?${JDBC_URL_OPTIONS}"
         if run_flyway_migration; then
           notice_log "Successfully ran Flyway $FLYWAY_COMMAND to ${FLYWAY_URL}"
         else
