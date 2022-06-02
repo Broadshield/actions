@@ -109,15 +109,15 @@ runs:
       run: |
         if git show-ref --tags tag1 --quiet; then
           # if tag exists delete it
-          # notice_log "${GITHUB_TAG} Tag already exists, deleting it to create a new one for this ref"
-          # git push --delete origin "${GITHUB_TAG}"
+          notice_log "${GITHUB_TAG} Tag already exists, deleting it to create a new one for this ref"
+          git push --delete origin "${GITHUB_TAG}"
           GITHUB_TAG=""
           set_env TAG_PREFIX "v"
         fi
         set_env GITHUB_TAG "${GITHUB_TAG}"
 
     - name: Update tag in application [gradle]
-      if: inputs.framework == 'gradle' && steps.is_release_branch.outputs.on == 'true'
+      if: inputs.framework == 'gradle' && steps.is_release_branch.outputs.on == true
       shell: bash
       env:
         tag_name: ${{ steps.bump.outputs.tag_name || steps.tag_name.outputs.tag_name }}

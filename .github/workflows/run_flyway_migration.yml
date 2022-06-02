@@ -22,6 +22,13 @@ on:
       flyway-sql-path:
         required: false
         type: string
+      flyway-schemas:
+        required: true
+        type: string
+      flyway-repair-first:
+        required: false
+        type: boolean
+        default: true
       chamber-aws-region:
         required: false
         type: string
@@ -45,6 +52,14 @@ on:
         required: false
         type: string
         default: "1.0.0"
+      jdbc-url-options:
+        required: false
+        type: string
+        default: "enabledTLSProtocols=TLSv1.2,TLSv1.3&useSSL=true&sslMode=PREFERRED&useServerPrepStmts=true&tcpKeepAlive=true&useCompression=true&useBatchMultiSend=false&connectTimeout=0&socketTimeout=0&usePipelineAuth=false&autoReconnect=true&maxReconnects=3&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=CONVERT_TO_NULL&allowMultiQueries=true"
+      jdbc-url-type:
+        required: false
+        type: string
+        default: "jdbc:mysql:aws:"
     secrets:
       envPAT:
         required: true
@@ -134,9 +149,12 @@ jobs:
           flyway-sql-path: ${{ steps.set-schema-path.outputs.flyway-sql-path }}
           flyway-user: ${{ env.JDBC_USER }}
           flyway-password: ${{ env.JDBC_PASSWORD }}
+          flyway-schemas: ${{ inputs.flyway-schemas }}
+          flyway-repair-first: ${{ inputs.flyway-repair-first }}
           jdbc-host: ${{ env.JDBC_HOST }}
           jdbc-port: ${{ env.JDBC_PORT }}
-          jdbc-url-type: ${{ env.JDBC_URL_TYPE }}
+          jdbc-url-type: ${{ inputs.jdbc-url-type }}
+          jdbc-url-options: ${{ inputs.jdbc-url-options }}
           jdbc-driver-cache-path: ${{ env.JDBC_DRIVER_CACHE_PATH }}
           aws-driver-version: ${{ inputs.aws-driver-version }}
 
