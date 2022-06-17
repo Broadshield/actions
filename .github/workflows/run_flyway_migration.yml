@@ -101,6 +101,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
           aws-region: ${{ inputs.aws-region }}
 
+      - name: Get Secrets
+        shell: bash-bastion
+        env:
+          AWS_REGION: ${{ inputs.chamber-aws-region }}
+        run: |
+          chamber env ${{ inputs.bastion-service }} | sed -e 's/^export //g' >>"${GITHUB_ENV}"
+
       - name: Configure AWS Credentials for prod
         if: inputs.env == 'prod' && inputs.flyway-secrets-env == 'prod'
         uses: aws-actions/configure-aws-credentials@v1
@@ -128,7 +135,6 @@ jobs:
           AWS_REGION: ${{ inputs.chamber-aws-region }}
         run: |
           chamber env ${{ inputs.flyway-service }} | sed -e 's/^export //g' >>"${GITHUB_ENV}"
-          chamber env ${{ inputs.bastion-service }} | sed -e 's/^export //g' >>"${GITHUB_ENV}"
 
       - name: Open SSH Tunnel
         shell: bash
