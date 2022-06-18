@@ -93,6 +93,9 @@ jobs:
       - name: Publish Bash Functions To Job Steps
         uses: Broadshield/actions/actions/bash_functions@dev
 
+      - name: Install Chamber
+        uses: Broadshield/actions/actions/install_chamber@dev
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         id: dev-credentials
@@ -125,9 +128,6 @@ jobs:
         uses: Broadshield/actions/actions/flyway_sql_path@dev
         env:
           FLYWAY_SQL_PATH: ${{ inputs.flyway-sql-path }}
-
-      - name: Install Chamber
-        uses: Broadshield/actions/actions/install_chamber@dev
 
       - name: Get Secrets
         shell: bash
