@@ -134,7 +134,7 @@ jobs:
         env:
           AWS_REGION: ${{ inputs.chamber-aws-region }}
         run: |
-          chamber env ${{ inputs.flyway-service }} | sed -e 's/^export //g' >>"${GITHUB_ENV}"
+          chamber env ${{ inputs.flyway-service }} | sed -e 's/^export //g | sed -e "s/'//g" >>"${GITHUB_ENV}"
 
       - name: Open SSH Tunnel
         shell: bash
@@ -153,10 +153,10 @@ jobs:
         uses: Broadshield/actions/actions/run_flyway@dev
         with:
           flyway-sql-path: ${{ steps.set-schema-path.outputs.flyway-sql-path }}
-          flyway-user: ${{ env.JDBC_USER }}
-          flyway-password: ${{ env.JDBC_PASSWORD }}
+          flyway-user: ${{ env.FLYWAY_USER || env.JDBC_USER }}
+          flyway-password: ${{ env.FLYWAY_PASSWORD || env.JDBC_PASSWORD }}
           flyway-schemas: ${{ inputs.flyway-schemas }}
-          flyway-repair-first: ${{ inputs.flyway-repair-first }}
+          flyway-repair-first: ${{ inputs.flyway-repair-first || 'true' }}
           jdbc-host: ${{ env.JDBC_HOST }}
           jdbc-port: ${{ env.JDBC_PORT }}
           jdbc-url-type: ${{ inputs.jdbc-url-type }}

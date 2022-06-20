@@ -2,7 +2,7 @@
 set -e
 
 function get_aws_jdbc_driver() {
-  if [ -d "${JDBC_DRIVER_PATH}" ] && [ -n "${AWS_MYSQL_DRIVER_VERSION}" ]; then
+  if [[ -d "${JDBC_DRIVER_PATH}" ]] && [[ -n "${AWS_MYSQL_DRIVER_VERSION}" ]]; then
     JDBC_DRIVER_DOWNLOAD_URL="https://github.com/awslabs/aws-mysql-jdbc/releases/download/${AWS_MYSQL_DRIVER_VERSION}/aws-mysql-jdbc-${AWS_MYSQL_DRIVER_VERSION}.jar"
     if wget -q "${JDBC_DRIVER_DOWNLOAD_URL}" -O "${JDBC_DRIVER_PATH}/aws-mysql-jdbc.jar"; then
       ## Default MySQL-Connector-J JDBC
@@ -24,9 +24,9 @@ function get_aws_jdbc_driver() {
   fi
 }
 get_aws_jdbc_driver
-if [ -n "${REPAIR_FIRST}" ]; then
+if [[ -n "${REPAIR_FIRST}" ]]; then
   echo "Repairing database first"
   flyway "$@" repair -v
 fi
 echo "Running migrations"
-flyway "$@" "${FLYWAY_COMMAND:-info}"
+flyway "$@" "${FLYWAY_COMMAND:-migrate}"
