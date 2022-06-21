@@ -104,12 +104,17 @@ jobs:
           aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
           aws-region: ${{ inputs.aws-region }}
 
-      - name: Get Secrets
+      - name: Get Bastion Secrets
         shell: bash
         env:
           AWS_REGION: ${{ inputs.chamber-aws-region }}
+          SERVICE_NAME: ${{ inputs.bastion-service }}
+          ENV_FILE_NAME: bastion.env
         run: |
-          chamber env ${{ inputs.bastion-service }} | sed -e 's/^export //g' >>"${GITHUB_ENV}"
+          chamber env "${SERVICE_NAME}" | sed -e "s/export \(.*\)=\(.*\)/\1=\2/g" > "${ENV_FILE_NAME}"
+          KEYS_FOUND="$(sed -e "s/\(.*\)=\(.*\)/\1/g" "${ENV_FILE_NAME}" | tr '\n' ', ')"
+          notice_log "Found these keys in ${SERVICE_NAME}: ${KEYS_FOUND%,}"
+          cat "${ENV_FILE_NAME}" >>"${GITHUB_ENV}"
 
       - name: Configure AWS Credentials for prod
         if: inputs.env == 'prod' && inputs.flyway-secrets-env == 'prod'
@@ -129,12 +134,17 @@ jobs:
         env:
           FLYWAY_SQL_PATH: ${{ inputs.flyway-sql-path }}
 
-      - name: Get Secrets
+      - name: Get Flyway Secrets
         shell: bash
         env:
           AWS_REGION: ${{ inputs.chamber-aws-region }}
+          SERVICE_NAME: ${{ inputs.flyway-service }}
+          ENV_FILE_NAME: flyway.env
         run: |
-          chamber env ${{ inputs.flyway-service }} | sed -e 's/^export //g | sed -e "s/'//g" >>"${GITHUB_ENV}"
+          chamber env "${SERVICE_NAME}" | sed -e "s/export \(.*\)=\(.*\)/\1=\2/g" > "${ENV_FILE_NAME}"
+          KEYS_FOUND="$(sed -e "s/\(.*\)=\(.*\)/\1/g" "${ENV_FILE_NAME}" | tr '\n' ', ')"
+          notice_log "Found these keys in ${SERVICE_NAME}: ${KEYS_FOUND%,}"
+          cat "${ENV_FILE_NAME}" >>"${GITHUB_ENV}"
 
       - name: Open SSH Tunnel
         shell: bash
@@ -169,3 +179,4 @@ jobs:
         if: always()
         run: |
           close_bastion_ssh_tunnel
+
