@@ -16,6 +16,7 @@ services:
       - FLYWAY_SCHEMAS
       - FLYWAY_DRIVER
       - FLYWAY_URL
+      - FLYWAY_BASELINE_ON_MIGRATE
       - JDBC_URL_OPTIONS
       - JDBC_HOST
       - JDBC_PORT
