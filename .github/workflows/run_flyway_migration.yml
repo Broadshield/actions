@@ -109,7 +109,10 @@ jobs:
         env:
           AWS_REGION: ${{ inputs.chamber-aws-region }}
         run: |
-          chamber env ${{ inputs.bastion-service }} | sed -e 's/^export //g' >>"${GITHUB_ENV}"
+          chamber env ${{ inputs.bastion-service }} > chamber.env
+          KEYS_FOUND="$(sed -e "s/export \(.*\)='\(.*\)'/\1/g" chamber.env | tr '\n' ', ')"
+          notice_log "Found these keys in ${{ inputs.bastion-service }}: ${KEYS_FOUND}"
+          sed -e "s/export \(.*\)='\(.*\)'/\1=\2/g" chamber.env >>"${GITHUB_ENV}"
 
       - name: Configure AWS Credentials for prod
         if: inputs.env == 'prod' && inputs.flyway-secrets-env == 'prod'
@@ -134,7 +137,10 @@ jobs:
         env:
           AWS_REGION: ${{ inputs.chamber-aws-region }}
         run: |
-          chamber env ${{ inputs.flyway-service }} | sed -e 's/^export //g | sed -e "s/'//g" >>"${GITHUB_ENV}"
+          chamber env ${{ inputs.flyway-service }} > flyway.env
+          KEYS_FOUND="$(sed -e "s/export \(.*\)='\(.*\)'/\1/g" flyway.env | tr '\n' ', ')"
+          notice_log "Found these keys in ${{ inputs.flyway-service }}: ${KEYS_FOUND}"
+          sed -e "s/export \(.*\)='\(.*\)'/\1=\2/g" flyway.env >>"${GITHUB_ENV}"
 
       - name: Open SSH Tunnel
         shell: bash
