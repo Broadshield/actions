@@ -504,12 +504,12 @@ function wait_for_passive_cname() {
 }
 function remove_passive() {
   ENV_NAME_TO_REMOVE="$(environment_name_by_cname passive)"
-  timeout 60 pipe_errors_from_eb_logs_to_github_actions "${ENV_NAME_TO_REMOVE}" || true
+  pipe_errors_from_eb_logs_to_github_actions "${ENV_NAME_TO_REMOVE}" || true
   eb_run terminate --nohang --force "${ENV_NAME_TO_REMOVE}"
   event_logs_background "${ENV_NAME_TO_REMOVE}" &
   notice_log "Passive Environment '${ENV_NAME_TO_REMOVE}' termination signal sent - waiting for CNAME $(passive_cname_prefix) to be released"
   if [[ $1 == "hang" ]]; then
-    timeout 180 wait_for_passive_cname &&
+    wait_for_passive_cname &&
       notice_log "Passive Environment '${ENV_NAME_TO_REMOVE}' has released the CNAME $(passive_cname_prefix)"
   fi
 
