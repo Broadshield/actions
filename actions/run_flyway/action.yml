@@ -22,6 +22,10 @@ inputs:
     required: false
     type: boolean
     default: true
+  flyway-url:
+    required: false
+    type: string
+    default: ''
   flyway-command:
     required: false
     type: string
@@ -104,6 +108,7 @@ runs:
         FLYWAY_DOCKER_IMAGE: ${{ inputs.flyway-docker-image }}
         FLYWAY_SCHEMAS: ${{ inputs.flyway-schemas }}
         FLYWAY_DRIVER: ${{ inputs.flyway-driver }}
+        FLYWAY_URL: ${{ inputs.flyway-url }}
         JDBC_URL_OPTIONS: ${{ inputs.jdbc-url-options }}
         JDBC_HOST: ${{ inputs.jdbc-host }}
         JDBC_PORT: ${{ inputs.jdbc-port }}

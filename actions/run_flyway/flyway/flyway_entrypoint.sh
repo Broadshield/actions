@@ -11,7 +11,7 @@ if [[ -n "${FLYWAY_PASSWORD}" ]]; then
 fi
 if [[ -z ${FLYWAY_URL} ]]; then
   if [[ -n ${JDBC_URL_TYPE} ]] && [[ -n ${JDBC_HOST} ]]; then
-    export FLYWAY_URL="${JDBC_URL_TYPE}//${JDBC_HOST}:${JDBC_PORT:-3306}?${JDBC_URL_OPTIONS:-}"
+    export FLYWAY_URL="${JDBC_URL_TYPE}//${JDBC_HOST}:${JDBC_PORT:-3306}/${FLYWAY_SCHEMAS:-}?${JDBC_URL_OPTIONS:-}"
   fi
 fi
 function get_aws_jdbc_driver() {

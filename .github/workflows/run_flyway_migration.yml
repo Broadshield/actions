@@ -25,6 +25,9 @@ on:
       flyway-schemas:
         required: true
         type: string
+      flyway-url:
+        required: false
+        type: string
       flyway-repair-first:
         required: false
         type: boolean
@@ -167,6 +170,7 @@ jobs:
           flyway-password: ${{ env.FLYWAY_PASSWORD || env.JDBC_PASSWORD }}
           flyway-schemas: ${{ inputs.flyway-schemas }}
           flyway-repair-first: ${{ inputs.flyway-repair-first || 'true' }}
+          flyway-url: ${{ inputs.flyway-url }}
           jdbc-host: ${{ env.JDBC_HOST }}
           jdbc-port: ${{ env.JDBC_PORT }}
           jdbc-url-type: ${{ inputs.jdbc-url-type }}
