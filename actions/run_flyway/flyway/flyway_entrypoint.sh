@@ -1,6 +1,19 @@
 #!/usr/bin/env bash
 set -e
 
+if [[ -n ${JDBC_PORT} ]]; then
+  JDBC_PORT="$(sed -e "s/'//g" <<<"${JDBC_PORT}")"
+  export JDBC_PORT
+fi
+if [[ -n "${FLYWAY_PASSWORD}" ]]; then
+  FLYWAY_PASSWORD="$(sed -e "s/^'\(.*\)'$/\1/g" <<<"${FLYWAY_PASSWORD}")"
+  export FLYWAY_PASSWORD
+fi
+if [[ -z ${FLYWAY_URL} ]]; then
+  if [[ -n ${JDBC_URL_TYPE} ]] && [[ -n ${JDBC_HOST} ]]; then
+    export FLYWAY_URL="${JDBC_URL_TYPE}//${JDBC_HOST}:${JDBC_PORT:-3306}?${JDBC_URL_OPTIONS:-}"
+  fi
+fi
 function get_aws_jdbc_driver() {
   if [[ -d "${JDBC_DRIVER_PATH}" ]] && [[ -n "${AWS_MYSQL_DRIVER_VERSION}" ]]; then
     JDBC_DRIVER_DOWNLOAD_URL="https://github.com/awslabs/aws-mysql-jdbc/releases/download/${AWS_MYSQL_DRIVER_VERSION}/aws-mysql-jdbc-${AWS_MYSQL_DRIVER_VERSION}.jar"

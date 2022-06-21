@@ -118,7 +118,8 @@ runs:
         FLYWAY_ENTRYPOINT: ${{ github.action_path }}/flyway/flyway_entrypoint.sh
       shell: bash
       run: |
-        export JDBC_PORT="${JDBC_PORT%%\'}"
+        export JDBC_PORT="$(sed -e "s/'//g" <<<"${JDBC_PORT}")"
+        export FLYWAY_PASSWORD="$(sed -e "s/^'\(.*\)'$/\1/g" <<<"${FLYWAY_PASSWORD}")"
         export FLYWAY_URL="${JDBC_URL_TYPE}//${JDBC_HOST}:${JDBC_PORT}?${JDBC_URL_OPTIONS}"
         if run_flyway_migration; then
           notice_log "Successfully ran Flyway $FLYWAY_COMMAND to ${FLYWAY_URL}"
