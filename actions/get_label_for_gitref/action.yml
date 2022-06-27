@@ -63,7 +63,7 @@ runs:
         set_env GITHUB_REF "${{ inputs.ref }}"
         set_env RELEASE_BRANCH "${{ inputs.release_branch }}"
         set_env BUMP_RELEASE "${{ inputs.bump_release }}"
-        set_env COMMITISH "${{ inputs.ref }}"
+        set_env COMMITISH "${{ github.sha }}"
 
     - name: On Release Branch
       id: is_release_branch
@@ -141,7 +141,7 @@ runs:
       if: inputs.framework == 'maven' && fromJSON(steps.is_release_branch.outputs.on || 'false')
       shell: bash
       env:
-        tag_name: ${{ steps.bump.outputs.tag_name || steps.tag_name.outputs.tag_name }}
+        tag_name: ${{ steps.tag_name.outputs.tag_name_without_v }}
       run: |
         if [ -n "${tag_name}" ]; then
           mvn versions:set "-DnewVersion=${tag_name}" "--file=${{ steps.file.outputs.path }}" || true
@@ -153,7 +153,7 @@ runs:
       if: fromJSON(steps.is_release_branch.outputs.on || 'false')
       shell: bash
       env:
-        tag_name: ${{ steps.bump.outputs.tag_name || steps.tag_name.outputs.tag_name }}
+        tag_name: ${{ steps.tag_name.outputs.tag_name }}
       run: |
         if git commit -m "Update application version to ${tag_name} [Version Updated]"; then
           git push && set_output commit true
@@ -162,7 +162,7 @@ runs:
 
     - name: Push Tag
       id: tag_version
-      if: steps.tag.outputs.tag == 'unknown'
+      if: steps.tag.outputs.tag == 'unknown' || fromJSON(steps.commit.outputs.commit || 'false')
       uses: mathieudutour/github-tag-action@v6.0
       with:
         commit_sha: ${{ env.COMMITISH }}
@@ -170,6 +170,7 @@ runs:
         release_branches: ${{ env.RELEASE_BRANCH }}
         custom_tag: ${{ env.GITHUB_TAG }}
         create_annotated_tag: 'true'
+        tag_prefix: ''
 
     - name: Get Label
       id: details
