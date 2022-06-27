@@ -41,11 +41,19 @@ runs:
   steps:
     - name: Publish Bash Functions To Job Steps
       uses: Broadshield/actions/actions/bash_functions@dev
-    - name: Git User Config
+
+    - name: get email
+      id: user
+      uses: evvanErb/get-github-email-by-username-action@v2.0
+      with:
+        github-username: ${{ github.actor }}
+        token: ${{ inputs.token }}
+
+    - name: Git Account Setup
       shell: bash
       run: |
-        git config --global user.email "github-actions@users.noreply.github.com"
-        git config --global user.name "github-actions"
+        git config --global user.email ${{ steps.user.outputs.email || 'wearsafe.jenkins@gmail.com' }}
+        git config --global user.name ${{ github.actor }}
 
     - name: Set Env Vars
       id: set_env_vars
@@ -55,12 +63,12 @@ runs:
         set_env GITHUB_REF "${{ inputs.ref }}"
         set_env RELEASE_BRANCH "${{ inputs.release_branch }}"
         set_env BUMP_RELEASE "${{ inputs.bump_release }}"
-        set_env COMMITISH "$(git rev-parse HEAD)"
+        set_env COMMITISH "${{ inputs.ref }}"
 
     - name: On Release Branch
       id: is_release_branch
       shell: bash
-      run: check_if_on_release_branch "${{ inputs.ref }}"
+      run: check_if_on_release_branch "${{ inputs.ref }}" "${{ inputs.release_branch }}"
 
     - name: Get current tag from ref
       id: tag
@@ -117,10 +125,10 @@ runs:
         set_env GITHUB_TAG "${GITHUB_TAG}"
 
     - name: Update tag in application [gradle]
-      if: inputs.framework == 'gradle' && steps.is_release_branch.outputs.on == true
+      if: inputs.framework == 'gradle' && fromJSON(steps.is_release_branch.outputs.on || 'false')
       shell: bash
       env:
-        tag_name: ${{ steps.bump.outputs.tag_name || steps.tag_name.outputs.tag_name }}
+        tag_name: ${{ steps.tag_name.outputs.tag_name_without_v }}
       run: |
 
         if [ -n "${tag_name}" ]; then
@@ -130,7 +138,7 @@ runs:
         fi
 
     - name: Update tag in application [maven]
-      if: inputs.framework == 'maven' && steps.is_release_branch.outputs.on == 'true'
+      if: inputs.framework == 'maven' && fromJSON(steps.is_release_branch.outputs.on || 'false')
       shell: bash
       env:
         tag_name: ${{ steps.bump.outputs.tag_name || steps.tag_name.outputs.tag_name }}
@@ -161,8 +169,6 @@ runs:
         github_token: ${{ inputs.token }}
         release_branches: ${{ env.RELEASE_BRANCH }}
         custom_tag: ${{ env.GITHUB_TAG }}
-        default_bump: '${{ env.BUMP_RELEASE }}'
-        tag_prefix: '${{ env.TAG_PREFIX }}'
         create_annotated_tag: 'true'
 
     - name: Get Label

@@ -259,14 +259,23 @@ function get_prerelease_suffix() {
 }
 
 function check_if_on_release_branch() {
-  if [[ ${1//refs\/heads\//} == "${RELEASE_BRANCH//refs\/heads\//}" ]]; then
-    set_output on true
-    set_env ON_RELEASE_BRANCH true
-    set_env BUMP_VERSION "${BUMP_VERSION:-patch}"
+  if [[ -n "${1:-${GITHUB_REF}}" ]] && [[ -n "${2:-${RELEASE_BRANCH}}" ]]; then
+    local raw_ref="${1:-${GITHUB_REF}}"
+    local -r ref="${raw_ref//refs\/heads\//}"
+    local raw_release_branch="${2:-${RELEASE_BRANCH}}"
+    local -r release="${raw_release_branch//refs\/heads\//}"
+
+    if [[ ${ref} == "${release}" ]]; then
+      set_output on true
+      set_env ON_RELEASE_BRANCH true
+      set_env BUMP_VERSION "${BUMP_VERSION:-patch}"
+    else
+      set_output on false
+      set_env ON_RELEASE_BRANCH false
+      set_env BUMP_VERSION "${BUMP_VERSION:-build}"
+    fi
   else
-    set_output on false
-    set_env ON_RELEASE_BRANCH false
-    set_env BUMP_VERSION "${BUMP_VERSION:-build}"
+    error_log "You need to provide a branch name to check"
   fi
 }
 function getProperty() {
@@ -641,7 +650,7 @@ function check_if_tag_created() {
     git describe --exact-match >/dev/null 2>&1
 }
 function get_tag_name() {
-  git describe --exact-match
+  git describe --exact-match 2>/dev/null
 }
 function set_tag_as_output_if_available() {
   if check_if_tag_created; then
