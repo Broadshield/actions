@@ -58,5 +58,6 @@
     "!ImportValue sequence",
     "!Select",
     "!Split"
-  ]
+  ],
+  "shellcheck.enable": true
 }

@@ -262,11 +262,11 @@ function check_if_on_release_branch() {
   if [[ ${1//refs\/heads\//} == "${RELEASE_BRANCH//refs\/heads\//}" ]]; then
     set_output on true
     set_env ON_RELEASE_BRANCH true
-    set_env BUMP_VERSION ${BUMP_VERSION:-patch}
+    set_env BUMP_VERSION "${BUMP_VERSION:-patch}"
   else
     set_output on false
     set_env ON_RELEASE_BRANCH false
-    set_env BUMP_VERSION ${BUMP_VERSION:-build}
+    set_env BUMP_VERSION "${BUMP_VERSION:-build}"
   fi
 }
 function getProperty() {
@@ -402,12 +402,12 @@ function install_chamber() {
 }
 
 function configure_bastion_ssh_tunnel() {
-  if [ -z "${BASTION_HOST}" ] || [ -z "${BASTION_USER}" ] || [ -z "${BASTION_PRIVATE_KEY}" ]; then
+  if [[ -z "${BASTION_HOST}" ]] || [[ -z "${BASTION_USER}" ]] || [[ -z "${BASTION_PRIVATE_KEY}" ]]; then
     error_log "One or more essential bastion variables missing: BASTION_PRIVATE_KEY:'${BASTION_PRIVATE_KEY:0:10}' BASTION_HOST:'${BASTION_HOST}' BASTION_USER:'${BASTION_USER}'"
     exit 1
   fi
   mkdir -p "${HOME}/.ssh"
-  if [ ! -f "${HOME}/.ssh/config" ]; then
+  if [[ ! -f "${HOME}/.ssh/config" ]]; then
     touch "${HOME}/.ssh/config"
   fi
   if ! grep -q "remotehost-proxy" "${HOME}/.ssh/config"; then
@@ -706,7 +706,7 @@ function create_mysql_tunnel() {
 
 function setup_local_mysql_route_variables() {
   # Get the local hosts IP
-  if [ -f '/sbin/ip' ]; then
+  if [[ -f '/sbin/ip' ]]; then
     # DOCKERHOST="$(/sbin/ip route | awk '/default/ { print  $3}')"
     DOCKERHOST="$(/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1)"
     echo "Using the docker hosts ethernet IP ${DOCKERHOST} for accessing mysql"
