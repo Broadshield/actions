@@ -150,7 +150,7 @@ runs:
 
     - name: Commit changes
       id: commit
-      if: steps.is_release_branch.outputs.on == 'true'
+      if: fromJSON(steps.is_release_branch.outputs.on || 'false')
       shell: bash
       env:
         tag_name: ${{ steps.bump.outputs.tag_name || steps.tag_name.outputs.tag_name }}
