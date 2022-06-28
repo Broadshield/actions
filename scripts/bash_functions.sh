@@ -727,6 +727,8 @@ function setup_local_mysql_route_variables() {
   set_env DOCKERHOST "127.0.0.1"
 
   # Set the mysql host to the docker host to use the tunnel
+  set_env JDBC_HOST_ORIGINAL "${JDBC_HOST}"
+  set_env JDBC_PORT_ORIGINAL "${JDBC_PORT}"
   set_env JDBC_HOST "${DOCKERHOST}"
   set_env JDBC_PORT "${JDBC_LOCAL_PORT}"
 }

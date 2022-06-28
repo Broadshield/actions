@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#shellcheck disable=SC2001
 set -e
 
 if [[ -n ${JDBC_PORT} ]]; then
