@@ -65,7 +65,7 @@ runs:
         set_env GITHUB_REF "${{ inputs.ref }}"
         set_env RELEASE_BRANCH "${{ inputs.release_branch }}"
         set_env BUMP_RELEASE "${{ inputs.bump_release }}"
-        set_env COMMITISH "${{ inputs.ref }}"
+        set_env COMMITISH "$(git log -1 --pretty=format:%H "origin/${{ inputs.ref }}")"
 
     - name: On Release Branch
       id: is_release_branch
