@@ -59,12 +59,13 @@ runs:
     - name: Set Env Vars
       id: set_env_vars
       shell: bash
+      working-directory: ${{ github.workspace }}
       run: |
         set_env ENV "${{ inputs.env }}"
         set_env GITHUB_REF "${{ inputs.ref }}"
         set_env RELEASE_BRANCH "${{ inputs.release_branch }}"
         set_env BUMP_RELEASE "${{ inputs.bump_release }}"
-        set_env COMMITISH "${{ github.sha }}"
+        set_env COMMITISH "${{ inputs.ref }}"
 
     - name: On Release Branch
       id: is_release_branch
