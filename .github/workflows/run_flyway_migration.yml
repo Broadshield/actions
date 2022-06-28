@@ -138,8 +138,8 @@ jobs:
       - name: Set schema path
         id: set-schema-path
         uses: Broadshield/actions/actions/flyway_sql_path@dev
-        env:
-          FLYWAY_SQL_PATH: ${{ inputs.flyway-sql-path }}
+        with:
+          flyway-sql-path: ${{ inputs.flyway-sql-path }}
 
       - name: Get Flyway Secrets
         shell: bash

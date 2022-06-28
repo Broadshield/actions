@@ -12,10 +12,13 @@ outputs:
 runs:
   using: 'composite'
   steps:
+    - name: Publish Bash Functions To Job Steps
+      uses: Broadshield/actions/actions/bash_functions@dev
     - name: Set FLYWAY_SQL_PATH
       id: path
       env:
         FLYWAY_SQL_PATH: ${{ inputs.flyway-sql-path }}
       shell: bash
       run: |
-        source "${{ github.action_path }}/../../scripts/flyway/get_sql_path.sh"
+        source "${{ github.action_path }}/get_sql_path.sh"
+        get_flyway_sql_path
