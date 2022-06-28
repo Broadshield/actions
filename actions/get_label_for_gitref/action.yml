@@ -45,6 +45,7 @@ runs:
     - name: get email
       id: user
       uses: evvanErb/get-github-email-by-username-action@v2.0
+      continue-on-error: true
       with:
         github-username: ${{ github.actor }}
         token: ${{ inputs.token }}
