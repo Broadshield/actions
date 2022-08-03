@@ -199,6 +199,6 @@
     ],
     "*.{html,js,json,jsx,md,ts,tsx,yml,yaml}": "eslint --cache --fix"
   },
-  "packageManager": "yarn@3.2.0",
+  "packageManager": "yarn@3.2.1",
   "root": true
 }

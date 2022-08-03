@@ -97,8 +97,8 @@ jobs:
           ref: ${{ inputs.tag_ref }}
           fetch-depth: 1
 
-      - name: Publish Bash Functions To Job Steps
-        uses: Broadshield/actions/actions/bash_functions@dev
+      - uses: bitflight-devops/shell-scripts@v1
+        name: Install shell utility scripts
 
       - name: Install Chamber
         uses: Broadshield/actions/actions/install_chamber@dev

@@ -4,8 +4,10 @@ set -o pipefail
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 # Get handy functions
-# shellcheck source=bash_functions.sh
-source "${DIR}/bash_functions.sh"
+if ! grep -q 'function' <<<"$(type check_if_tag_created 2>&1)"; then
+  # shellcheck source=../bash_functions.sh
+  source "${DIR}/../bash_functions.sh"
+fi
 
 ## Description:
 #   Uses `git describe --exact-match` to get the current tag from branch HEAD.

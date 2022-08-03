@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 # Get handy functions
-# shellcheck source=bash_functions.sh
-source "${DIR}/bash_functions.sh"
+if ! grep -q 'function' <<<"$(type check_if_tag_created 2>&1)"; then
+  # shellcheck source=./bash_functions.sh
+  source "${DIR}/bash_functions.sh"
+fi
 
 if [[ -f "${GITHUB_WORKSPACE}/.elasticbeanstalk/config.yml" ]]; then
   eval "$(parse_yaml .elasticbeanstalk/config.yml | grep global_application_name)"

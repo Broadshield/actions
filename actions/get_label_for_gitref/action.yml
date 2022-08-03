@@ -39,8 +39,8 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Publish Bash Functions To Job Steps
-      uses: Broadshield/actions/actions/bash_functions@dev
+    - uses: bitflight-devops/shell-scripts@v1
+      name: Install shell utility scripts
 
     - name: get email
       id: user
@@ -159,6 +159,7 @@ runs:
       run: |
         if git commit -m "Update application version to ${tag_name} [Version Updated]"; then
           git push && set_output commit true
+          # git log -1 --pretty=format:%H
           set_env COMMITISH "$(git rev-parse HEAD)"
         fi
 

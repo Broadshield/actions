@@ -28,8 +28,8 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Publish Bash Functions To Job Steps
-      uses: Broadshield/actions/actions/bash_functions@dev
+    - uses: bitflight-devops/shell-scripts@v1
+      name: Install shell utility scripts
     - name: wait for port
       continue-on-error: ${{ inputs.fail-on-error }}
       shell: bash
