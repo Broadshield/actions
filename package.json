@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@Broadshield/actions",
-  "version": "1.0.2",
+  "version": "0.0.9",
   "description": "This is a monorepo of various actions for Wearsafe",
   "license": "MIT",
   "author": "Jamie Nelson <jamie@wearsafe.com>",
