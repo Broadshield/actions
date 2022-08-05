@@ -4,4 +4,3 @@
 # actions
 
 This is a monorepo containing GitHub Actions for Wearsafe Labs.
-

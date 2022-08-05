@@ -4,7 +4,7 @@ set -x -e
 function generate_unique_log_file_name() {
   local LOG_PATH="/var/log/platform"
   mkdir -p "${LOG_PATH}"
-  if [[ "$1" =~ (silent|-s|-q|quiet) ]]; then
+  if [[ $1 =~ (silent|-s|-q|quiet) ]]; then
     local SILENT=true
     shift
   else
@@ -24,7 +24,7 @@ function generate_unique_log_file_name() {
 
   mv "${LOG_NAME_TMP}" "${LOG_NAME}"
 
-  if [[ "${SILENT}" == "false" ]]; then
+  if [[ ${SILENT} == "false" ]]; then
 
     echo "Script for environment ${ENV_NAME} start time: $(date --rfc-3339=seconds)" >"${LOG_NAME}"
 

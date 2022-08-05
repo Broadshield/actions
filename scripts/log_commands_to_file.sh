@@ -17,13 +17,13 @@ if [[ ! -t 1 ]]; then
   # start logger process in background with STDIN coming from named pipe
   # also tell logger to append the script name to the syslog messages
   # so we know where they came from
-  logger < "${named_pipe}" -t "$0" &
+  logger <"${named_pipe}" -t "$0" &
 
   # or maybe you wanted a log file and output to STDOUT
   # tee <"${named_pipe}" /tmp/outfile &
 
   # redirect stderr and stdout to named_pipe
-  exec 1> "${named_pipe}" 2>&1
+  exec 1>"${named_pipe}" 2>&1
 
 fi
 

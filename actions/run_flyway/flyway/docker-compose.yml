@@ -4,6 +4,7 @@ services:
     image: ${FLYWAY_DOCKER_IMAGE:-boxfuse/flyway:5.2.4-alpine}
     container_name: flyway
     network_mode: ${NETWORK_MODE:-host}
+    user: '${UID:-0}:${GID:-0}'
     environment:
       - FLYWAY_CONNECT_RETRIES
       - FLYWAY_VALIDATE_ON_MIGRATE
@@ -30,7 +31,7 @@ services:
     entrypoint: ['/flyway/flyway_entrypoint.sh']
     volumes:
       - '${FLYWAY_CONFIG_DIR:-config}:/flyway/config'
-      - '${FLYWAY_SQL_PATH:-./src/main/resources/db/migration/}:/flyway/sql/:rw,cached'
+      - '${FLYWAY_SQL_PATH:-src/main/resources/db/migration/}:/flyway/sql/:rw,cached'
       - '${FLYWAY_ENTRYPOINT:-.github/deployment/flyway/flyway_entrypoint.sh}:/flyway/flyway_entrypoint.sh:ro,cached'
       - '${JDBC_DRIVER_CACHE:-drivers}:${JDBC_DRIVER_PATH:-/flyway/drivers}'
 
@@ -39,3 +40,10 @@ volumes:
     driver: local
   drivers:
     driver: local
+# volumes:
+#     foo_Config:
+#       driver: local
+#       driver_opts:
+#         device:    $VolumeRoot/foo/Config
+#         o:         bind
+#         type:      none

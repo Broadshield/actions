@@ -23,14 +23,14 @@ function __ps4_ret() {
   return "${_r}"
 }
 export -f __ps4_ret
-if [[ "${DEBUG:-"false"}" = "true" ]]; then
+if [[ ${DEBUG:-"false"} == "true" ]]; then
   echo "Debug mode on"
   set -x
   export PS4='$(__ps4_ret)'
 fi
 #shellcheck disable=SC2183
 function quiet_trace() {
-  if [[ -o xtrace ]] && [[ -n "${1}" ]]; then
+  if [[ -o xtrace ]] && [[ -n ${1} ]]; then
     if [[ "$(type -t "${1}" 2>/dev/null)" == 'function' ]]; then
       # It is a function
       # Check if it has the keyword "## [QUIET_TRACING]"

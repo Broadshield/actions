@@ -1,5 +1,5 @@
 const pp = 'plugin:prettier/recommended';
-const a = 'auto';
+
 module.exports = {
   root: true,
   overrides: [
@@ -10,14 +10,16 @@ module.exports = {
     },
     {
       files: ['./packages/cf-multiple-app-roots/source/*.js'],
-      extends: [a, pp],
+      extends: [pp],
       rules: {
         'no-plusplus': 'off',
         'unicorn/prefer-module': 'off',
         'no-use-before-define': 'off',
         'no-console': 'off',
       },
+      parser: '@babel/eslint-parser',
       parserOptions: {
+        requireConfigFile: false,
         sourceType: 'script',
         ecmaVersion: 'latest',
         ecmaFeatures: {
@@ -30,13 +32,19 @@ module.exports = {
       },
     },
     {
-      files: ['*.html', '*.cjs', '*.json', '*.jsx', '*.md'],
-      extends: [a, pp],
+      files: ['*.cjs', '*.jsx'],
+      extends: [pp],
       rules: {
         'no-plusplus': 'off',
       },
+      parser: '@babel/eslint-parser',
       parserOptions: {
-        ecmaVersion: 2017,
+        requireConfigFile: false,
+        sourceType: 'script',
+        ecmaVersion: 'latest',
+        ecmaFeatures: {
+          impliedStrict: true,
+        },
       },
 
       env: {
@@ -80,7 +88,7 @@ module.exports = {
         '@typescript-eslint/array-type': 'error',
         '@typescript-eslint/await-thenable': 'error',
         '@typescript-eslint/ban-ts-comment': 'error',
-        camelcase: 'off',
+        'camelcase': 'off',
 
         '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
         '@typescript-eslint/func-call-spacing': ['error', 'never'],
@@ -105,16 +113,16 @@ module.exports = {
         '@typescript-eslint/promise-function-async': 'error',
         '@typescript-eslint/require-array-sort-compare': 'error',
         '@typescript-eslint/restrict-plus-operands': 'error',
-        semi: 'error',
+        'semi': 'error',
         '@typescript-eslint/semi': 'error',
         '@typescript-eslint/type-annotation-spacing': 'error',
         '@typescript-eslint/unbound-method': 'error',
         'space-before-function-paren': 'off',
       },
       env: {
-        node: true,
-        es6: true,
-        es2021: true,
+        'node': true,
+        'es6': true,
+        'es2021': true,
         'jest/globals': true,
       },
     },

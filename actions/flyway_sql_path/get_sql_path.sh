@@ -9,7 +9,7 @@ set -o pipefail
 function get_flyway_sql_path() {
   # If the variable does exist, and the path exists, then just run the migration using that path
 
-  if [[ -n ${FLYWAY_SQL_PATH} ]] && [[ -d "${FLYWAY_SQL_PATH}" ]]; then
+  if [[ -n ${FLYWAY_SQL_PATH} ]] && [[ -d ${FLYWAY_SQL_PATH} ]]; then
     local sqlpath="${FLYWAY_SQL_PATH}"
   elif [[ -n ${FLYWAY_SQL_PATH} ]] && [[ -d "${GITHUB_WORKSPACE:-.}/${FLYWAY_SQL_PATH}" ]]; then
     local sqlpath="${GITHUB_WORKSPACE:-.}/${FLYWAY_SQL_PATH}"

@@ -109,21 +109,21 @@ h() {
     _COLORS=("${_COLORS_BG[@]}" "${_COLORS_FG[@]}")
   fi
 
-  if [[ "$#" -gt ${#_COLORS[@]} ]]; then
+  if [[ $# -gt ${#_COLORS[@]} ]]; then
     echo "You have passed to hhighlighter more keywords to search than the number of configured colors.
 Check the content of your H_COLORS_FG and H_COLORS_BG environment variables or unset them to use default 12 defined colors."
     return 1
   fi
 
-  if [[ -n "${ZSH_VERSION}" ]]; then
+  if [[ -n ${ZSH_VERSION} ]]; then
     local WHICH="whence"
   else
-    [[ -n "${BASH_VERSION}" ]]
+    [[ -n ${BASH_VERSION} ]]
     local WHICH="type -P"
   fi
 
-  if ! ACKGREP_LOC="$(${WHICH} ack-grep)" || [[ -z "${ACKGREP_LOC}" ]]; then
-    if ! ACK_LOC="$(${WHICH} ack)" || [[ -z "${ACK_LOC}" ]]; then
+  if ! ACKGREP_LOC="$(${WHICH} ack-grep)" || [[ -z ${ACKGREP_LOC} ]]; then
+    if ! ACK_LOC="$(${WHICH} ack)" || [[ -z ${ACK_LOC} ]]; then
       echo "ERROR: Could not find the ack or ack-grep commands"
       return 1
     else

@@ -259,7 +259,7 @@ function get_prerelease_suffix() {
 }
 
 function check_if_on_release_branch() {
-  if [[ -n "${1:-${GITHUB_REF}}" ]] && [[ -n "${2:-${RELEASE_BRANCH}}" ]]; then
+  if [[ -n ${1:-${GITHUB_REF}} ]] && [[ -n ${2:-${RELEASE_BRANCH}} ]]; then
     local raw_ref="${1:-${GITHUB_REF}}"
     local -r ref="${raw_ref//refs\/heads\//}"
     local raw_release_branch="${2:-${RELEASE_BRANCH}}"
@@ -411,7 +411,7 @@ function install_chamber() {
 }
 
 function configure_bastion_ssh_tunnel() {
-  if [[ -z "${BASTION_HOST}" ]] || [[ -z "${BASTION_USER}" ]] || [[ -z "${BASTION_PRIVATE_KEY}" ]]; then
+  if [[ -z ${BASTION_HOST} ]] || [[ -z ${BASTION_USER} ]] || [[ -z ${BASTION_PRIVATE_KEY} ]]; then
     error_log "One or more essential bastion variables missing: BASTION_PRIVATE_KEY:'${BASTION_PRIVATE_KEY:0:10}' BASTION_HOST:'${BASTION_HOST}' BASTION_USER:'${BASTION_USER}'"
     exit 1
   fi
@@ -692,10 +692,10 @@ function run_flyway_migration() {
   if docker compose -p flyway --project-directory "${GITHUB_WORKSPACE:-./}" -f "${FLYWAY_DOCKER_COMPOSE_FILE}" run --rm flyway; then
     ERRORED=false
   fi
-  if [[ "${NETWORK_CREATED}" == true ]]; then
+  if [[ ${NETWORK_CREATED} == true ]]; then
     docker network rm api-backend || true
   fi
-  if [[ "${ERRORED}" != false ]]; then
+  if [[ ${ERRORED} != false ]]; then
     error_log "Flyway migration failed"
     return 1
   fi

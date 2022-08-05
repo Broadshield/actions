@@ -1,6 +1,10 @@
 # Local Only
 /.inprogress/
 **/output/
+.yarn/cache
+.trunk/actions
+.trunk/notifications
+.trunk/logs
 # Logs
 logs
 *.log

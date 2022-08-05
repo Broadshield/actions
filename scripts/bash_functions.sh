@@ -43,7 +43,7 @@ if [[ -z ${SHELL_SCRIPTS_BOOTSTRAP_LOADED:-} ]]; then
   if [[ -n ${BFD_REPOSITORY:-} ]] && [[ -x ${BFD_REPOSITORY} ]]; then
     SCRIPTS_LIB_DIR="${BFD_REPOSITORY}/lib"
   fi
-  if [[ -n "${SCRIPTS_LIB_DIR}" ]]; then
+  if [[ -n ${SCRIPTS_LIB_DIR} ]]; then
     NONINTERACTIVE=1 source "${SCRIPTS_LIB_DIR}/bootstrap.sh" || true
   else
     echo "Failed to run bootstrap.sh"

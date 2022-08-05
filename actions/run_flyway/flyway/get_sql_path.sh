@@ -16,7 +16,7 @@ fi
 ## Script Function Starts Here ##
 function get_flyway_sql_path() {
   # If the variable does exist, and the path exists, then just run the migration using that path
-  if [[ -d "${FLYWAY_SQL_PATH}" ]]; then
+  if [[ -d ${FLYWAY_SQL_PATH} ]]; then
     set_env FLYWAY_SQL_PATH "${FLYWAY_SQL_PATH}"
   elif [[ -d "${GITHUB_WORKSPACE:-.}/${FLYWAY_SQL_PATH}" ]]; then
     set_env FLYWAY_SQL_PATH "${GITHUB_WORKSPACE:-.}/${FLYWAY_SQL_PATH}"
