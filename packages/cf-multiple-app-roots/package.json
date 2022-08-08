@@ -11,7 +11,7 @@
   "devDependencies": {
     "@babel/cli": "^7.17.10",
     "@babel/core": "^7.18.0",
-    "@babel/preset-env": "^7.18.0",
+    "@babel/preset-env": "^7.18.10",
     "@types/babel__core": "^7",
     "@types/babel__preset-env": "^7",
     "fast-async": "^6.3.8"
