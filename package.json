@@ -14,12 +14,8 @@
   },
   "type": "module",
   "main": "lib/main.js",
-  "files": [
-    "lib"
-  ],
-  "workspaces": [
-    "packages/*"
-  ],
+  "files": ["lib"],
+  "workspaces": ["packages/*"],
   "scripts": {
     "pre-commit": "yarn run lint:fix && yarn run build && git add lib && yarn run generate-docs",
     "pre-push": "yarn run format",
@@ -155,13 +151,7 @@
     "typescript-eslint-language-service": "^5.0.0",
     "yarn-or-npm": "^3.0.1"
   },
-  "keywords": [
-    "actions",
-    "github",
-    "jira",
-    "node16",
-    "tickets"
-  ],
+  "keywords": ["actions", "github", "jira", "node16", "tickets"],
   "engines": {
     "node": ">=16.10.0"
   },
@@ -170,25 +160,13 @@
     "registry": "https://npm.pkg.github.com"
   },
   "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ],
+    "extends": ["@commitlint/config-conventional"],
     "rules": {
-      "body-max-length": [
-        0
-      ],
-      "body-max-line-length": [
-        0
-      ],
-      "footer-max-length": [
-        0
-      ],
-      "footer-max-line-length": [
-        0
-      ],
-      "header-max-length": [
-        0
-      ]
+      "body-max-length": [0],
+      "body-max-line-length": [0],
+      "footer-max-length": [0],
+      "footer-max-line-length": [0],
+      "header-max-length": [0]
     }
   },
   "displayName": "Broadshield/actions",
@@ -199,11 +177,9 @@
   },
   "lint-staged": {
     "{src,__tests__}/**/*.js": "eslint --cache --fix",
-    "*.ts": [
-      "eslint --cache --fix"
-    ],
+    "*.ts": ["eslint --cache --fix"],
     "*.{html,js,json,jsx,md,ts,tsx,yml,yaml}": "eslint --cache --fix"
   },
-  "packageManager": "yarn@3.2.2",
+  "packageManager": "yarn@3.2.4",
   "root": true
 }

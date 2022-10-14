@@ -1,14 +1,29 @@
 version: 0.1
-cli:
-  version: 0.17.0-beta
-lint:
+runtimes:
   enabled:
-    - eslint@8.18.0
-    - git-diff-check@SYSTEM
-    - actionlint@1.6.15
-    - gitleaks@8.9.0
-    - markdownlint@0.31.1
-    - prettier@2.6.2
+    - go@1.18.3
+    - node@16.14.2
+plugins:
+  sources:
+    - id: trunk
+      ref: v0.0.5
+      uri: https://github.com/trunk-io/plugins
+actions:
+  enabled:
+    - trunk-cache-prune
+    - trunk-upgrade-available
+cli:
+  version: 0.18.1-beta
+lint:
+  disabled:
+    - git-diff-check
+    - cspell
+  enabled:
+    - eslint@8.25.0
+    - actionlint@1.6.21
+    - gitleaks@8.15.0
+    - markdownlint@0.32.2
+    - prettier@2.7.1
     - shellcheck@0.8.0
     - shfmt@3.5.0
   ignore:

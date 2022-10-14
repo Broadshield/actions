@@ -12,7 +12,7 @@ fi
 git add dist package.json yarn.lock .yarn
 git commit -m "chore(release): bump version to ${newtag}" --no-verify
 git semver "${bump}"
-newtag2="$(git semver get)"
+# newtag2="$(git semver get)"
 # if [[ "${newtag}" != "${newtag2}" ]]; then
 #   echo "ERROR: new tag does not match expected tag"
 #   echo "  expected: ${newtag}"

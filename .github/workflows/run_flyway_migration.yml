@@ -4,79 +4,100 @@ on:
   workflow_call:
     inputs:
       ref:
+        description: 'The branch or tag ref to checkout'
         required: true
         type: string
       tag_ref:
+        description: 'The ref of the tag created by the release'
         required: true
         type: string
       tag_name:
+        description: 'The name of the tag created by the release'
         required: true
         type: string
       env:
+        description: 'The environment to run the migration against'
         required: true
         type: string
       flyway-secrets-env:
+        description: 'The environment which contains the flyway secrets'
         required: false
         type: string
         default: dev
       flyway-sql-path:
+        description: 'The path to the flyway sql files'
         required: false
         type: string
       flyway-schemas:
+        description: 'The schemas to run the migration against'
         required: true
         type: string
       flyway-url:
+        description: 'The url to the database'
         required: false
         type: string
       flyway-repair-first:
+        description: 'Whether to run a repair first'
         required: false
         type: boolean
         default: true
       flyway-baseline-on-migrate:
+        description: 'Whether to baseline on migrate'
         required: false
         type: boolean
         default: false
       chamber-aws-region:
+        description: 'The AWS region to use for chamber'
         required: false
         type: string
         default: us-east-1
       chamber-secret-backend:
+        description: 'The secret backend to use for chamber'
         required: false
         type: string
         default: ssm
       flyway-service:
+        description: 'The service to use for chamber for flyway variables'
         required: true
         type: string
-        default: chamber
       bastion-service:
+        description: 'The service to use for chamber for bastion variables'
         required: true
         type: string
       aws-region:
-        required: true
+        description: 'The AWS region to use for migrations'
         type: string
         default: us-east-1
       aws-driver-version:
+        description: 'The AWS driver version to use for flyway'
         required: false
         type: string
         default: '1.0.0'
       jdbc-url-options:
+        description: 'The JDBC URL options to use for flyway'
         required: false
         type: string
         default: 'enabledTLSProtocols=TLSv1.2,TLSv1.3&useSSL=true&sslMode=PREFERRED&useServerPrepStmts=true&tcpKeepAlive=true&useCompression=true&useBatchMultiSend=false&connectTimeout=0&socketTimeout=0&usePipelineAuth=false&autoReconnect=true&maxReconnects=3&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=CONVERT_TO_NULL&allowMultiQueries=true'
       jdbc-url-type:
+        description: 'The JDBC URL type to use for flyway'
         required: false
         type: string
         default: 'jdbc:mysql:aws:'
     secrets:
       envPAT:
+        description: 'The PAT to use for the environment'
         required: true
       aws-access-key-id:
+        description: 'The AWS access key id to use for the migration'
         required: true
       aws-secret-access-key:
+        description: 'The AWS secret access key to use for the migration'
         required: true
       role-to-assume:
+        description: 'The role to assume for the migration'
         required: false
       role-external-id:
+        description: 'The external id to use for the role to assume'
         required: false
 
 jobs:
@@ -86,7 +107,6 @@ jobs:
     env:
       CHAMBER_SECRET_BACKEND: ${{ inputs.chamber-secret-backend }}
       CHAMBER_AWS_REGION: ${{ inputs.chamber-aws-region }}
-      CHAMBER_SERVICE_PREFIX: ${{ inputs.chamber-service-prefix }}
       AWS_REGION: ${{ inputs.aws-region }}
       JDBC_DRIVER_CACHE_PATH: ${{ github.workspace }}/.cache/jdbc_drivers
 
