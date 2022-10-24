@@ -70,7 +70,7 @@
     "@babel/core": "^7.18.10",
     "@babel/eslint-parser": "^7.19.1",
     "@babel/plugin-proposal-decorators": "^7.19.1",
-    "@babel/preset-env": "^7.19.1",
+    "@babel/preset-env": "^7.19.4",
     "@broadshield/prettier-config": "^0.3.9",
     "@octokit/graphql-schema": "^10.74.2",
     "@prettier/plugin-ruby": "^3.2.0",
