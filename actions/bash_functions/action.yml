@@ -16,7 +16,7 @@ runs:
           export BASH_ENV="${{ github.action_path }}/../../scripts/bash_functions.sh"
           echo "BASH_ENV=${BASH_ENV}" >>"${GITHUB_ENV}"
           echo "Loaded Bash Functions"
-          echo "::set-output name=loaded::true"
+          echo "loaded=true" >> $GITHUB_OUTPUT
         else
-          echo "::set-output name=loaded::false"
+          echo "loaded=false" >> $GITHUB_OUTPUT
         fi

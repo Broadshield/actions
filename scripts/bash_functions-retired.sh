@@ -197,7 +197,7 @@ function set_output() {
     return 1
   fi
   if running_in_ci; then
-    echo "::set-output name=${1}::${2}"
+    echo "${1}=${2}" >>"${GITHUB_OUTPUT}"
     debug_log "Output Variable set: ${1}=${2}"
   else
     debug_log "Not in CI, Output Variable not set: ${1}=${2}"

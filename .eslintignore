@@ -9,3 +9,7 @@ rollup.config.js
 !.github/
 *.tsbuildinfo
 /.github/github_event_jira_transitions.example.yml
+*.json
+*.yaml
+*.yml
+.github/

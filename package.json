@@ -14,10 +14,14 @@
   },
   "type": "module",
   "main": "lib/main.js",
-  "files": ["lib"],
-  "workspaces": ["packages/*"],
+  "files": [
+    "lib"
+  ],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "pre-commit": "yarn run lint:fix && yarn run build && git add lib && yarn run generate-docs",
+    "pre-commit": "yarn run lint:fix;pretty-quick",
     "pre-push": "yarn run format",
     "all": "yarn run build && yarn run format && yarn run lint && yarn run package && yarn test",
     "build": "rimraf lib;yarn run typecheck;node .github/scripts/esbuild.cjs",
@@ -25,14 +29,12 @@
     "build:docker:win32": "docker run --rm -t -v \"%cd%\":/work -w /work node:16-alpine sh -c \"yarn run build\"",
     "build:docker:default": "docker run --rm -t -v $(pwd):/work -w /work node:16-alpine sh -c 'yarn run build'",
     "clean": "rimraf lib",
-    "format": "trunk check",
-    "format:all": "trunk check --all",
-    "format:fix": "trunk fmt",
-    "format:fix:all": "trunk fmt --all",
+    "format": "prettier --write \"./{**/,}*.{ts,js,json,md,yml}\"",
+    "lint": "eslint -c .eslintrc.cjs --color packages",
+    "prelint": "yarn run format && tsc --project tsconfig.json --noemit",
     "lint:eslint": "eslint packages/*/source",
     "lint:tsc": "tsc --noEmit",
     "generate-docs": "github-action-readme-generator && prettier --write .ghadocs.json README.md && git add .ghadocs.json README.md",
-    "lint": "yarn exec eslint --color packages actions .github",
     "lint:fix": "yarn run lint --fix",
     "lint:markdown": "yarn run markdownlint \"**/*.md\"",
     "lint:markdown:fix": "yarn run lint:markdown --fix",
@@ -90,42 +92,32 @@
     "@typescript-eslint/typescript-estree": "^5.32.0",
     "dotenv": "^16.0.1",
     "esbuild": "^0.14.53",
-    "eslint": "^8.21.0",
-    "eslint-config-adjunct": "^4.11.2",
+    "eslint": "^8.26.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-airbnb-typescript": "^17.0.0",
-    "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-formatter-codeframe": "^7.32.1",
+    "eslint-import-resolver-typescript": "^3.5.2",
     "eslint-plugin-actions": "^2.0.0",
     "eslint-plugin-array-func": "^3.1.7",
+    "eslint-plugin-editorconfig": "^4.0.2",
     "eslint-plugin-eslint-comments": "^3.2.0",
-    "eslint-plugin-github": "^4.3.7",
-    "eslint-plugin-html": "^7.1.0",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-jest": "^26.7.0",
+    "eslint-plugin-jest": "^27.1.3",
     "eslint-plugin-jest-async": "^1.0.3",
-    "eslint-plugin-json": "^3.1.0",
     "eslint-plugin-lodash": "^7.4.0",
     "eslint-plugin-lodash-fp": "^2.2.0-a1",
-    "eslint-plugin-markdown": "^3.0.0",
-    "eslint-plugin-no-constructor-bind": "^2.0.4",
-    "eslint-plugin-no-secrets": "^0.8.9",
-    "eslint-plugin-no-unsanitized": "^4.0.1",
+    "eslint-plugin-neverthrow": "latest",
     "eslint-plugin-no-use-extend-native": "^0.5.0",
     "eslint-plugin-optimize-regex": "^1.2.1",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-promise": "^6.0.0",
-    "eslint-plugin-scanjs-rules": "^0.2.1",
-    "eslint-plugin-security": "^1.5.0",
-    "eslint-plugin-simple-import-sort": "^7.0.0",
-    "eslint-plugin-sonarjs": "^0.14.0",
-    "eslint-plugin-sort-class-members": "^1.14.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-simple-import-sort": "^8.0.0",
+    "eslint-plugin-sonarjs": "^0.16.0",
+    "eslint-plugin-sort-class-members": "^1.15.2",
     "eslint-plugin-switch-case": "^1.1.2",
-    "eslint-plugin-unicorn": "^43.0.2",
-    "eslint-plugin-yml": "^1.1.0",
+    "eslint-plugin-unicorn": "^44.0.2",
     "esm": "^3.2.25",
-    "github-action-readme-generator": "1.2.2",
+    "github-action-readme-generator": "^1.2.7",
     "husky": "^8.0.1",
     "jest": "^28.1.3",
     "jest-circus": "^28.1.3",
@@ -151,7 +143,13 @@
     "typescript-eslint-language-service": "^5.0.0",
     "yarn-or-npm": "^3.0.1"
   },
-  "keywords": ["actions", "github", "jira", "node16", "tickets"],
+  "keywords": [
+    "actions",
+    "github",
+    "jira",
+    "node16",
+    "tickets"
+  ],
   "engines": {
     "node": ">=16.10.0"
   },
@@ -160,13 +158,25 @@
     "registry": "https://npm.pkg.github.com"
   },
   "commitlint": {
-    "extends": ["@commitlint/config-conventional"],
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
     "rules": {
-      "body-max-length": [0],
-      "body-max-line-length": [0],
-      "footer-max-length": [0],
-      "footer-max-line-length": [0],
-      "header-max-length": [0]
+      "body-max-length": [
+        0
+      ],
+      "body-max-line-length": [
+        0
+      ],
+      "footer-max-length": [
+        0
+      ],
+      "footer-max-line-length": [
+        0
+      ],
+      "header-max-length": [
+        0
+      ]
     }
   },
   "displayName": "Broadshield/actions",
@@ -177,7 +187,9 @@
   },
   "lint-staged": {
     "{src,__tests__}/**/*.js": "eslint --cache --fix",
-    "*.ts": ["eslint --cache --fix"],
+    "*.ts": [
+      "eslint --cache --fix"
+    ],
     "*.{html,js,json,jsx,md,ts,tsx,yml,yaml}": "eslint --cache --fix"
   },
   "packageManager": "yarn@3.2.4",

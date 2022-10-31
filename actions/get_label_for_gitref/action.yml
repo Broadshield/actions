@@ -88,9 +88,9 @@ runs:
       shell: bash
       run: |
         if [ -f "./pom.xml" ];then
-          echo "::set-output name=path::./pom.xml"
+          echo "path=./pom.xml" >> $GITHUB_OUTPUT
         elif [ -f "./gradle.properties" ];then
-          echo "::set-output name=path::./gradle.properties"
+          echo "path=./gradle.properties" >> $GITHUB_OUTPUT
         fi
 
     - name: Generate Label
