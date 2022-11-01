@@ -166,7 +166,7 @@ runs:
     - name: Push Tag
       id: tag_version
       if: steps.tag.outputs.tag == 'unknown' || fromJSON(steps.commit.outputs.commit || 'false')
-      uses: mathieudutour/github-tag-action@v6.0
+      uses: mathieudutour/github-tag-action@v6.1
       with:
         commit_sha: ${{ env.COMMITISH }}
         github_token: ${{ inputs.token }}
