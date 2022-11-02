@@ -14,19 +14,47 @@ outputs:
 runs:
   using: 'composite'
   steps:
+    - name: Get Filepath
+      id: file
+      shell: bash
+      run: |
+        if [ -f "./pom.xml" ];then
+          set_output "path" "./pom.xml"
+        elif [ -f "./gradle.properties" ];then
+          set_output "path" "./gradle.properties"
+        fi
+
+    - uses: avides/actions-project-version-check@latest
+      if: steps.file.outputs.path == './pom.xml'
+      id: actions_project_version_check
+      continue-on-error: true
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        file-to-check: ${{steps.file.outputs.path}}
+
+    - if: steps.file.outputs.path == './pom.xml'
+      shell: bash
+      run: |
+        echo "Pom version is: ${{ steps.actions_project_version_check.outputs.version }}"
+        set_env "POM_VERSION" "${{ steps.actions_project_version_check.outputs.version }}"
+
     - name: Get Version
       id: version
       shell: bash
       run: |
-        if [ -f "${GITHUB_WORKSPACE:-.}/pom.xml" ];then
-          FILENAME="${GITHUB_WORKSPACE:-.}/pom.xml"
-          install_xmllint >/dev/null 2>&1
-          VERSION="$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' "${FILENAME}")"
+        if [ -f "${GITHUB_WORKSPACE:-.}/pom.xml" ]; then
+          if [ -z "${POM_VERSION:-}" ];then
+            FILENAME="${GITHUB_WORKSPACE:-.}/pom.xml"
+            install_xmllint >/dev/null 2>&1
+            VERSION="$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' "${FILENAME}")"
+          else
+            VERSION=${POM_VERSION}
+          fi
         elif [ -f "${GITHUB_WORKSPACE:-.}/gradle.properties" ];then
           FILENAME="${GITHUB_WORKSPACE:-.}/gradle.properties"
           VERSION="$(getProperty version "${FILENAME}")"
         fi
-        if [ -z "${VERSION}" ];then
+        if [ -z "${VERSION:-}" ];then
           VERSION="${{inputs.default_version}}"
         fi
         set_output version "${VERSION}"

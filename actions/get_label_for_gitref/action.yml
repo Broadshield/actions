@@ -72,6 +72,16 @@ runs:
       shell: bash
       run: check_if_on_release_branch "${{ inputs.ref }}" "${{ inputs.release_branch }}"
 
+    - name: Get Filepath
+      id: file
+      shell: bash
+      run: |
+        if [ -f "./pom.xml" ];then
+          set_output "path" "./pom.xml"
+        elif [ -f "./gradle.properties" ];then
+          set_output "path" "./gradle.properties"
+        fi
+
     - name: Get current tag from ref
       id: tag
       working-directory: ${{ github.workspace }}
@@ -82,16 +92,6 @@ runs:
       id: get_java_app_version
       continue-on-error: true
       uses: Broadshield/actions/actions/get_java_app_version@dev
-
-    - name: Get Filepath
-      id: file
-      shell: bash
-      run: |
-        if [ -f "./pom.xml" ];then
-          echo "path=./pom.xml" >> $GITHUB_OUTPUT
-        elif [ -f "./gradle.properties" ];then
-          echo "path=./gradle.properties" >> $GITHUB_OUTPUT
-        fi
 
     - name: Generate Label
       if: steps.tag.outputs.tag == 'unknown' && steps.file.outputs.path != ''
@@ -132,7 +132,6 @@ runs:
       env:
         tag_name: ${{ steps.tag_name.outputs.tag_name_without_v }}
       run: |
-
         if [ -n "${tag_name}" ]; then
           sed -E "s/(^version([\t ]+)?=([\t ]+)?).*\$/\1${tag_name}/" ${{ steps.file.outputs.path }} | tee ${{ steps.file.outputs.path }}.tmp
           mv ${{ steps.file.outputs.path }}.tmp ${{ steps.file.outputs.path }}
