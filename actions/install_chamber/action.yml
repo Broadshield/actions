@@ -16,6 +16,7 @@ runs:
       id: path
       env:
         INSTALL_PREFIX: ${{ inputs.install-prefix }}
+        PREFER_USERSPACE: true
       shell: bash
       run: |
         install_chamber_version

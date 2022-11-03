@@ -8,15 +8,17 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Publish Bash Functions To Job Steps
-      id: bash_functions
-      shell: bash
-      run: |
-        if [ -z "${BASH_ENV}" ]; then
-          export BASH_ENV="${{ github.action_path }}/../../scripts/bash_functions.sh"
-          echo "BASH_ENV=${BASH_ENV}" >>"${GITHUB_ENV}"
-          echo "Loaded Bash Functions"
-          echo "loaded=true" >> $GITHUB_OUTPUT
-        else
-          echo "loaded=false" >> $GITHUB_OUTPUT
-        fi
+    - uses: bitflight-devops/shell-scripts@v1
+      name: Install shell utility scripts
+    # - name: Publish Bash Functions To Job Steps
+    #   id: bash_functions
+    #   shell: bash
+    #   run: |
+    #     if [ -z "${BASH_ENV}" ]; then
+    #       export BASH_ENV="${{ github.action_path }}/../../scripts/bash_functions.sh"
+    #       echo "BASH_ENV=${BASH_ENV}" >>"${GITHUB_ENV}"
+    #       echo "Loaded Bash Functions"
+    #       echo "loaded=true" >> $GITHUB_OUTPUT
+    #     else
+    #       echo "loaded=false" >> $GITHUB_OUTPUT
+    #     fi
