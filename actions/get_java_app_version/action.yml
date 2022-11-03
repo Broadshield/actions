@@ -18,21 +18,21 @@ runs:
       id: file
       shell: bash
       run: |
-        if [ -f "./pom.xml" ];then
-          set_output "path" "./pom.xml"
+        if [ -f "${GITHUB_WORKSPACE:-.}/pom.xml" ];then
+          set_output "path" "${GITHUB_WORKSPACE:-.}/pom.xml"
         elif [ -f "./gradle.properties" ];then
           set_output "path" "./gradle.properties"
         fi
 
     - uses: avides/actions-project-version-check@v1.3.0
-      if: steps.file.outputs.path == './pom.xml'
+      if: contains(steps.file.outputs.path,'pom.xml')
       id: actions_project_version_check
       continue-on-error: true
       with:
         token: ${{ github.token }}
         file-to-check: ${{steps.file.outputs.path}}
 
-    - if: steps.file.outputs.path == './pom.xml'
+    - if: contains(steps.file.outputs.path,'pom.xml')
       shell: bash
       run: |
         echo "Pom version is: ${{ steps.actions_project_version_check.outputs.version }}"
