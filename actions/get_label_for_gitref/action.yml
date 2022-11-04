@@ -43,18 +43,9 @@ runs:
       name: Install shell utility scripts
 
     - name: get email
-      id: user
-      uses: evvanErb/get-github-email-by-username-action@v2.0
-      continue-on-error: true
-      with:
-        github-username: ${{ github.actor }}
-        token: ${{ inputs.token }}
-
-    - name: Git Account Setup
-      shell: bash
       run: |
-        git config --global user.email ${{ steps.user.outputs.email || 'wearsafe.jenkins@gmail.com' }}
-        git config --global user.name ${{ github.actor }}
+        git config --global user.email $(get_last_github_author_email 'wearsafe.jenkins@gmail.com')
+        git config --global user.name $(get_last_github_author_name)
 
     - name: Set Env Vars
       id: set_env_vars
@@ -76,10 +67,10 @@ runs:
       id: file
       shell: bash
       run: |
-        if [ -f "./pom.xml" ];then
-          set_output "path" "./pom.xml"
+        if [ -f "pom.xml" ];then
+          set_output "path" "pom.xml"
         elif [ -f "./gradle.properties" ];then
-          set_output "path" "./gradle.properties"
+          set_output "path" "gradle.properties"
         fi
 
     - name: Get current tag from ref
