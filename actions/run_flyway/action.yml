@@ -84,7 +84,7 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - uses: bitflight-devops/shell-scripts@v1
+    - uses: bitflight-devops/shell-scripts@v2.2
       name: Install shell utility scripts
 
     - name: Wait until MySQL is available
@@ -123,12 +123,12 @@ runs:
         FLYWAY_ENTRYPOINT: ${{ github.action_path }}/flyway/flyway_entrypoint.sh
       shell: bash
       run: |
-        notice_log "Running Flyway Migration as ${FLYWAY_USER} to ${JDBC_HOST_ORIGINAL:-${JDBC_HOST}}:${JDBC_PORT_ORIGINAL:-${JDBC_PORT}}"
+        info_log "Running Flyway Migration as ${FLYWAY_USER} to ${JDBC_HOST_ORIGINAL:-${JDBC_HOST}}:${JDBC_PORT_ORIGINAL:-${JDBC_PORT}}"
         export JDBC_PORT="$(sed -e "s/'//g" <<<"${JDBC_PORT}")"
         export FLYWAY_PASSWORD="$(sed -e "s/^'\(.*\)'$/\1/g" <<<"${FLYWAY_PASSWORD}")"
         export FLYWAY_URL="${JDBC_URL_TYPE}//${JDBC_HOST}:${JDBC_PORT}?${JDBC_URL_OPTIONS}"
         if run_flyway_migration; then
-          notice_log "Successfully ran Flyway $FLYWAY_COMMAND to ${FLYWAY_URL}"
+          info_log "Successfully ran Flyway $FLYWAY_COMMAND to ${FLYWAY_URL}"
         else
           error_log "Failed to run Flyway $FLYWAY_COMMAND to ${FLYWAY_URL}"
           exit 1

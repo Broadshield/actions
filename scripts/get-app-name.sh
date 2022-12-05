@@ -21,6 +21,3 @@ function remove_env_from_application_name() {
 #shellcheck disable=SC2154
 set_env APPLICATION_PREFIX "$(remove_env_from_application_name "${global_application_name}")"
 set_output app_prefix "${APPLICATION_PREFIX}"
-export GITHUB_LOG_TITLE="Elastic Beanstalk Application name"
-notice_log "\`${APPLICATION_PREFIX}\`"
-unset GITHUB_LOG_TITLE

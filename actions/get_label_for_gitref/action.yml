@@ -39,7 +39,7 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - uses: bitflight-devops/shell-scripts@v1
+    - uses: bitflight-devops/shell-scripts@v2.2
       name: Install shell utility scripts
 
     - name: get email

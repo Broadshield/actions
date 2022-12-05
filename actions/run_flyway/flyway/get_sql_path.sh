@@ -26,6 +26,6 @@ function get_flyway_sql_path() {
     error_log "Could not find schema path!"
     exit 1
   fi
-  notice_log "Schema path: ${FLYWAY_SQL_PATH}"
+  info_log "Schema path: ${FLYWAY_SQL_PATH}"
 }
 ## Script Function Ends Here ##

@@ -117,7 +117,7 @@ jobs:
           ref: ${{ inputs.tag_ref }}
           fetch-depth: 1
 
-      - uses: bitflight-devops/shell-scripts@v1
+      - uses: bitflight-devops/shell-scripts@v2.2
         name: Install shell utility scripts
 
       - name: Install Chamber
@@ -140,7 +140,7 @@ jobs:
         run: |
           chamber env "${SERVICE_NAME}" | sed -e "s/export \(.*\)=\(.*\)/\1=\2/g" > "${ENV_FILE_NAME}"
           KEYS_FOUND="$(sed -e "s/\(.*\)=\(.*\)/\1/g" "${ENV_FILE_NAME}" | tr '\n' ', ')"
-          notice_log "Found these keys in ${SERVICE_NAME}: ${KEYS_FOUND%,}"
+          debug_log "Found these keys in ${SERVICE_NAME}: ${KEYS_FOUND%,}"
           cat "${ENV_FILE_NAME}" >>"${GITHUB_ENV}"
 
       - name: Configure AWS Credentials for prod
@@ -170,7 +170,7 @@ jobs:
         run: |
           chamber env "${SERVICE_NAME}" | sed -e "s/export \(.*\)=\(.*\)/\1=\2/g" > "${ENV_FILE_NAME}"
           KEYS_FOUND="$(sed -e "s/\(.*\)=\(.*\)/\1/g" "${ENV_FILE_NAME}" | tr '\n' ', ')"
-          notice_log "Found these keys in ${SERVICE_NAME}: ${KEYS_FOUND%,}"
+          debug_log "Found these keys in ${SERVICE_NAME}: ${KEYS_FOUND%,}"
           cat "${ENV_FILE_NAME}" >>"${GITHUB_ENV}"
 
       - name: Open SSH Tunnel

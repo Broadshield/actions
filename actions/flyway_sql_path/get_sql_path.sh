@@ -21,6 +21,6 @@ function get_flyway_sql_path() {
   fi
   set_env FLYWAY_SQL_PATH "${sqlpath}"
   set_output flyway-sql-path "${sqlpath}"
-  notice_log "Schema path: ${FLYWAY_SQL_PATH}"
+  info_log "Schema path: ${FLYWAY_SQL_PATH}"
 }
 ## Script Function Ends Here ##

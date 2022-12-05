@@ -481,17 +481,17 @@ function version_available() {
 }
 
 function create_application_version() {
-  APPLICATION_VERSION_LABEL="${1}"
-  DESCRIPTION="${2}"
+  local version_label="${1}"
+  local version_description="${2}"
 
-  if ! version_available "${APPLICATION_VERSION_LABEL}"; then
-    debug_log "Creating application version ${APPLICATION_VERSION_LABEL}"
+  if ! version_available "${version_label}"; then
+    debug_log "Creating application version ${version_label}"
     eb_run appversion -a "${APPLICATION_NAME}" \
-      --label "${APPLICATION_VERSION_LABEL}" \
+      --label "${version_label}" \
       --create \
       --process \
       --staged \
-      -m "${DESCRIPTION:-${APPLICATION_VERSION_LABEL}}"
+      -m "${version_description:-${version_label}}"
   fi
 
 }
@@ -516,10 +516,10 @@ function remove_passive() {
   pipe_errors_from_eb_logs_to_github_actions "${ENV_NAME_TO_REMOVE}" || true
   eb_run terminate --nohang --force "${ENV_NAME_TO_REMOVE}"
   event_logs_background "${ENV_NAME_TO_REMOVE}" &
-  notice_log "Passive Environment '${ENV_NAME_TO_REMOVE}' termination signal sent - waiting for CNAME $(passive_cname_prefix) to be released"
+  info_log "Passive Environment '${ENV_NAME_TO_REMOVE}' termination signal sent - waiting for CNAME $(passive_cname_prefix) to be released"
   if [[ $1 == "hang" ]]; then
     wait_for_passive_cname &&
-      notice_log "Passive Environment '${ENV_NAME_TO_REMOVE}' has released the CNAME $(passive_cname_prefix)"
+      info_log "Passive Environment '${ENV_NAME_TO_REMOVE}' has released the CNAME $(passive_cname_prefix)"
   fi
 
 }
