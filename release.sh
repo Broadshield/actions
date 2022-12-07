@@ -9,7 +9,7 @@ if [[ ${yarntag} != "${newtag#v}" ]]; then
   yarn build
 fi
 
-git add dist package.json yarn.lock .yarn
+git add package.json yarn.lock .yarn
 git commit -m "chore(release): bump version to ${newtag}" --no-verify
 git semver "${bump}"
 # newtag2="$(git semver get)"
@@ -30,4 +30,5 @@ git push origin ":${stub_major}" 2>/dev/null || true
 git push origin ":${stub_major_minor}" 2>/dev/null || true
 yarn postversion
 git push
+git push --tags
 # yarn release:post
