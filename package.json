@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "actions",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "This is a monorepo of various actions for Wearsafe",
   "license": "MIT",
   "author": "Jamie Nelson <jamie@wearsafe.com>",
