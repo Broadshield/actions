@@ -17,18 +17,18 @@ Get the label for a given gitref.
 ```yaml
 - uses: Broadshield/actions@v1.0.1
   with:
-    ref: ""
+    ref: ''
 
-    env: ""
+    env: ''
 
     # Default: dev
-    release_branch: ""
+    release_branch: ''
 
     # build, patch, minor, major
     # Default: patch
-    bump_release: ""
+    bump_release: ''
 
-    token: ""
+    token: ''
 ```
 
 <!-- end usage -->
