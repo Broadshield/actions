@@ -111,7 +111,7 @@ jobs:
       JDBC_DRIVER_CACHE_PATH: ${{ github.workspace }}/.cache/jdbc_drivers
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: Checkout Code
         with:
           ref: ${{ inputs.tag_ref }}
