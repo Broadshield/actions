@@ -126,7 +126,7 @@
     "lint-staged": "^13.0.3",
     "markdownlint": "^0.26.1",
     "markdownlint-cli": "^0.32.1",
-    "postcss": "^8.4.14",
+    "postcss": "^8.4.31",
     "prettier": "^2.7.1",
     "prettier-package-json": "^2.6.4",
     "prettier-plugin-java": "^1.6.2",
